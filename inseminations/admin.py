@@ -7,25 +7,26 @@ class InseminationAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'animal',
-        'insemination_date',
-        'expected_birth',
-        'result',
+        'date_of_insemination',
+        'expected_pregnancy',
+        'pregnancy_check',
+        'is_pregnant',
         'created_at',
-        'updated_at',
     )
     list_filter = (
-        'result',
         'animal__farm__company',
         'animal__breed',
         'animal__category',
-        'insemination_date',
-        'expected_birth',
+        'is_pregnant',
+        'date_of_insemination',
+        'expected_pregnancy',
     )
     search_fields = (
         'animal__name',
+        'animal__earring',
         'animal__farm__name',
     )
-    date_hierarchy = 'insemination_date'
+    date_hierarchy = 'date_of_insemination'
 
     readonly_fields = (
         'created_at',
