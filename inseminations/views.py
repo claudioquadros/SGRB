@@ -22,23 +22,10 @@ class InseminationListView(ListView):
 class InseminationCreateView(CreateView):
     model = models.Insemination
     template_name = "Insemination_create.html"
-    form_class = forms.InseminationForm
+    form_class = forms.InseminationRegisterForm
     success_url = reverse_lazy('insemination_list')
 
 
 class InseminationDetailView(DetailView):
     model = models.Insemination
     template_name = 'insemination_detail.html'
-
-
-class AnimalUpdateView(UpdateView):
-    model = models.Animal
-    template_name = 'insemination_update.html'
-    form_class = forms.InseminationForm
-    success_url = reverse_lazy('insemination_list')
-
-
-class AnimalDeleteView(DeleteView):
-    model = models.Animal
-    template_name = 'insemination_delete.html'
-    success_url = reverse_lazy('insemination_list')

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Lista de Inseminações</h2>
+    <div class="card">
+        <div class="card-body">
+            {% if inseminations %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Animal</th>
+                            <th>Data da Inseminação</th>
+                            <th>Data Verificação da Prenhez</th>
+                            <th>Está Prenha?</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for insemination in inseminations %}
+                            <tr>
+                                <td>{{ insemination.animal.name }}</td>
+                                <td>{{ insemination.date_of_insemination|date:"d/m/Y" }}</td>
+                                <td>
+                                    {% if insemination.expected_pregnancy %}
+                                        {{ insemination.expected_pregnancy|date:"d/m/Y" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if insemination.is_pregnant %}
+                                        {{ insemination.get_is_pregnant_display }}
+                                    {% else %}
+                                        Não Verificado
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'inseminations:insemination_detail' insemination.id %}" class="btn btn-info btn-sm">Detalhes</a>
+                                    <a href="{% url 'inseminations:insemination_update' insemination.id %}" class="btn btn-warning btn-sm">Editar</a>
+                                    <a href="{% url 'inseminations:insemination_delete' insemination.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Nenhuma inseminação registrada.</p>
+            {% endif %}
+            <a href="{% url 'inseminations:insemination_create' %}" class="btn btn-primary mt-3">Nova Inseminação</a>
+        </div>
+    </div>
+</div>
+{% include "components/_pagination.html" %}
+{% endblock %}

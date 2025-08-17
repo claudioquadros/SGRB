@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Detalhes da Inseminação</h2>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Animal</th>
+                    <td>{{ insemination.animal.name }}</td>
+                </tr>
+                <tr>
+                    <th>Data da Inseminação</th>
+                    <td>{{ insemination.date_of_insemination|date:"d/m/Y" }}</td>
+                </tr>
+                <tr>
+                    <th>Data Verificação da Prenhez</th>
+                    <td>
+                        {% if insemination.expected_pregnancy %}
+                            {{ insemination.expected_pregnancy|date:"d/m/Y" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Data Checagem de Prenhez</th>
+                    <td>
+                        {% if insemination.pregnancy_check %}
+                            {{ insemination.pregnancy_check|date:"d/m/Y" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Está Prenha?</th>
+                    <td>
+                        {% if insemination.is_pregnant %}
+                            {{ insemination.get_is_pregnant_display }}
+                        {% else %}
+                            Não Verificado
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Criado em</th>
+                    <td>{{ insemination.created_at|date:"d/m/Y H:i" }}</td>
+                </tr>
+                <tr>
+                    <th>Última atualização</th>
+                    <td>{{ insemination.updated_at|date:"d/m/Y H:i" }}</td>
+                </tr>
+            </table>
+            <a href="{% url 'inseminations:insemination_list' %}" class="btn btn-secondary mt-3">Voltar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
