@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h3 class="display-6">Detalhes da Propriedades</h3>
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">{{ object.name }}</h3>
+        <p class="card-text"> 
+          <strong>Companhia:</strong>
+          {{ object.company }}
+        </p>
+        <p class="card-text">
+          <strong>Data de inserção:</strong>
+          {{ object.created_at|date:"d/m/Y H:i" }}
+        </p>
+        <p class="card-text">
+          <strong>Última atualização:</strong>
+          {{ object.updated_at|date:"d/m/Y H:i" }}
+        </p>
+      </div>
+    </div>
+    <a href="{% url 'farm_list' %}" class="btn btn-secondary mt-3">Voltar para Lista de Propriedades</a>
+  </div>
+{% endblock %}

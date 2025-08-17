@@ -1,0 +1,5 @@
+manage.py
+__pycache__
+venv
+media
+.env

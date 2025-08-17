@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  SGRB - Propriedades
+{% endblock %}
+
+{% block content %}
+
+  <div class="row mb-3">
+
+    <div class="col-md-6">
+      <form method="get" action="{% url 'farm_list' %}">
+        <div class="input-group">
+          <input type="text" class="form-control" name="name" placeholder="Nome" value="{{ request.GET.name }}">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>  
+      </form>
+    </div>
+
+    <div class="col-md-6">
+      <a href="{% url 'farm_create' %}" class="btn btn-success float-end">
+        <i class="bi bi-plus"></i> Nova Propriedade
+      </a>
+    </div>
+
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Companhia</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for farm in farms %}
+          <tr>
+            <td>{{ farm.id }}</td>
+            <td>{{ farm.name}}</td>
+            <td>{{ farm.company }}</td>
+            <td>
+              <a href="{% url "farm_detail" farm.id %}" class="btn btn-info btn-sm">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="{% url "farm_update" farm.id %}" class="btn btn-warning btn-sm">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <a href="{% url "farm_delete" farm.id %}" class="btn btn-danger btn-sm">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </tr>  
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "components/_pagination.html" %}
+  
+{% endblock %}
