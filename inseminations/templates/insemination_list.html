@@ -3,6 +3,15 @@
 {% block content %}
 <div class="container mt-4">
     <h2 class="mb-4">Lista de Inseminações</h2>
+
+    <!-- Botão para nova inseminação -->
+    <div class="mb-3 text-end">
+        <a href="{% url 'insemination_create' %}" class="btn btn-success">
+            <i class="bi bi-plus"></i> Nova Inseminação
+        </a>
+    </div>
+
+    <!-- Tabela de inseminações -->
     <div class="card">
         <div class="card-body">
             {% if inseminations %}
@@ -36,9 +45,15 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{% url 'insemination_detail' insemination.id %}" class="btn btn-info btn-sm">Detalhes</a>
-                                    <a href="#" class="btn btn-warning btn-sm">Editar</a>
-                                    <a href="#" class="btn btn-danger btn-sm">Excluir</a>
+                                    <a href="{% url 'insemination_detail' insemination.id %}" class="btn btn-info btn-sm">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -47,7 +62,6 @@
             {% else %}
                 <p>Nenhuma inseminação registrada.</p>
             {% endif %}
-            <a href="{% url 'insemination_create' %}" class="btn btn-primary mt-3">Nova Inseminação</a>
         </div>
     </div>
 </div>
