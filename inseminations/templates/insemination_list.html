@@ -1,69 +1,67 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Lista de Inseminações</h2>
+  <div class="container mt-4">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <form method="get" action="{% url 'insemination_list' %}">
+          <div class="input-group">
+            <input type="text" class="form-control" name="name" placeholder="Nome" value="{{ request.GET.name }}" />
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+          </div>
+        </form>
+      </div>
 
-    <!-- Botão para nova inseminação -->
-    <div class="mb-3 text-end">
-        <a href="{% url 'insemination_create' %}" class="btn btn-success">
-            <i class="bi bi-plus"></i> Nova Inseminação
-        </a>
+      <div class="col-md-6">
+        <a href="{% url 'insemination_create' %}" class="btn btn-success float-end"><i class="bi bi-plus"></i> Nova Inseminação</a>
+      </div>
     </div>
-
-    <!-- Tabela de inseminações -->
     <div class="card">
-        <div class="card-body">
-            {% if inseminations %}
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Animal</th>
-                            <th>Data da Inseminação</th>
-                            <th>Data Verificação da Prenhez</th>
-                            <th>Está Prenha?</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for insemination in inseminations %}
-                            <tr>
-                                <td>{{ insemination.animal.name }}</td>
-                                <td>{{ insemination.date_of_insemination|date:"d/m/Y" }}</td>
-                                <td>
-                                    {% if insemination.expected_pregnancy %}
-                                        {{ insemination.expected_pregnancy|date:"d/m/Y" }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if insemination.is_pregnant %}
-                                        {{ insemination.get_is_pregnant_display }}
-                                    {% else %}
-                                        Não Verificado
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <a href="{% url 'insemination_detail' insemination.id %}" class="btn btn-info btn-sm">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>Nenhuma inseminação registrada.</p>
-            {% endif %}
-        </div>
+      <div class="card-body">
+        {% if inseminations %}
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Animal</th>
+                <th>Data da Inseminação</th>
+                <th>Data Verificação da Prenhez</th>
+                <th>Está Prenha?</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for insemination in inseminations %}
+                <tr>
+                  <td>{{ insemination.animal.name }}</td>
+                  <td>{{ insemination.date_of_insemination|date:'d/m/Y' }}</td>
+                  <td>
+                    {% if insemination.expected_pregnancy %}
+                      {{ insemination.expected_pregnancy|date:'d/m/Y' }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if insemination.is_pregnant %}
+                      {{ insemination.get_is_pregnant_display }}
+                    {% else %}
+                      Não Verificado
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{% url 'insemination_detail' insemination.id %}" class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
+                    <a href="#" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+                    <a href="#" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>Nenhuma inseminação registrada.</p>
+        {% endif %}
+      </div>
     </div>
-</div>
-{% include "components/_pagination.html" %}
+  </div>
+  {% include 'components/_pagination.html' %}
 {% endblock %}
