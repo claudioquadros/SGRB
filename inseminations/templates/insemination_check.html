@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h3 class="display-6">Verificação de Prenhez</h3>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5>Dados da Inseminação</h5>
+        <p><strong>Animal:</strong> {{ object.animal }}</p>
+        <p><strong>Data da Inseminação:</strong> {{ object.date_of_insemination|date:'d/m/Y' }}</p>
+        <p><strong>Previsão da Verificação da Prenhez:</strong> {{ object.expected_pregnancy|date:'d/m/Y' }}</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          <div class="row mb-3">
+            <div class="col-md-6">
+              {{ form.pregnancy_check.label_tag }}
+              {{ form.pregnancy_check }}
+            </div>
+            <div class="col-md-6">
+              {{ form.is_pregnant.label_tag }}
+              {{ form.is_pregnant }}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Salvar Verificação</button>
+        </form>
+      </div>
+    </div>
+
+    <a href="{% url 'insemination_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Inseminações</a>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const dateField = document.getElementById('id_pregnancy_check')
+      if (dateField && !dateField.value) {
+        const today = new Date()
+        const yyyy = today.getFullYear()
+        const mm = String(today.getMonth() + 1).padStart(2, '0')
+        const dd = String(today.getDate()).padStart(2, '0')
+        dateField.value = `${yyyy}-${mm}-${dd}`
+      }
+    })
+  </script>
+{% endblock %}

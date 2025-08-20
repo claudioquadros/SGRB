@@ -16,6 +16,8 @@ class InseminationListView(ListView):
         if name:
             queryset = queryset.filter(name__icontains=name)
 
+        queryset = queryset.order_by('expected_pregnancy')
+
         return queryset
 
 
@@ -29,3 +31,10 @@ class InseminationCreateView(CreateView):
 class InseminationDetailView(DetailView):
     model = models.Insemination
     template_name = 'insemination_detail.html'
+
+
+class InseminationCheckView(UpdateView):
+    model = models.Insemination
+    template_name = 'insemination_check.html'
+    form_class = forms.InseminationCheckForm
+    success_url = reverse_lazy('insemination_list')

@@ -13,8 +13,8 @@ class InseminationRegisterForm(forms.ModelForm):
             'date_of_insemination': forms.DateInput(
                 attrs={
                     'class': 'form-control',
-                    'type': 'date', 'style':
-                    'max-width: 200px;'
+                    'type': 'date',
+                    'style': 'max-width: 200px;'
                 },
                 format='%Y-%m-%d'
             ),
@@ -53,3 +53,23 @@ class InseminationRegisterForm(forms.ModelForm):
                 cleaned_data["expected_pregnancy"] = date_of_insemination + timedelta(days=10)  # noqa
 
         return cleaned_data
+
+
+class InseminationCheckForm(forms.ModelForm):
+    class Meta:
+        model = Insemination
+        fields = ['pregnancy_check', 'is_pregnant']
+        widgets = {
+            'pregnancy_check': forms.DateInput(
+                attrs={
+                    'class': 'form-control',
+                    'type': 'date',
+                    'style': 'max-width: 200px;'
+                }
+            ),
+            'is_pregnant': forms.Select(attrs={'class': 'form-select', 'style':'max-width: 200px;'}) # noqa
+        }
+        labels = {
+            'pregnancy_check': 'Data da Verificação da Prenhez',
+            'is_pregnant': 'Está Prenha?',
+        }

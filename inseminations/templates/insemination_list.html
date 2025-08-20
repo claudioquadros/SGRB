@@ -24,7 +24,8 @@
               <tr>
                 <th>Animal</th>
                 <th>Data da Inseminação</th>
-                <th>Data Verificação da Prenhez</th>
+                <th>Verificar a Prenhez</th>
+                <th>Verificado</th>
                 <th>Está Prenha?</th>
                 <th>Ações</th>
               </tr>
@@ -42,6 +43,13 @@
                     {% endif %}
                   </td>
                   <td>
+                    {% if insemination.pregnancy_check %}
+                      {{ insemination.pregnancy_check|date:'d/m/Y' }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                  <td>
                     {% if insemination.is_pregnant %}
                       {{ insemination.get_is_pregnant_display }}
                     {% else %}
@@ -50,7 +58,7 @@
                   </td>
                   <td>
                     <a href="{% url 'insemination_detail' insemination.id %}" class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
-                    <a href="#" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+                    <a href="{% url 'insemination_check' insemination.id %}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
                     <a href="#" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
                   </td>
                 </tr>
