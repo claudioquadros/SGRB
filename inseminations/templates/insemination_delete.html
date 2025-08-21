@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="conteiner mt-4">
+    <h3 class="display-6">Deletar Inseminação</h3>
+    <div class="card">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5>Dados da Inseminação</h5>
+        <p><strong>Animal:</strong> {{ object.animal }}</p>
+        <p><strong>Data da Inseminação:</strong> {{ object.date_of_insemination|date:'d/m/Y' }}</p>
+        <p><strong>Previsão da Verificação da Prenhez:</strong> {{ object.expected_pregnancy|date:'d/m/Y' }}</p>
+      </div>
+    </div>
+      <div class="card-body">
+        <p class="card-text">Tem certeza que deseja excluir a Inseminação da <strong>{{ object.animal.name }} </strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Deletar</button>
+        </form>
+      </div>
+    </div>
+    <a href="{% url 'animal_list' %}" class="btn btn-secondary mt-3"> Cancelar e Voltar para a Lista de Animais</a>  
+  </div>
+
+
+{% endblock content %}

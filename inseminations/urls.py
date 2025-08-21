@@ -7,4 +7,5 @@ urlpatterns = [
     path('inseminations/create/', views.InseminationCreateView.as_view(), name='insemination_create'),  # noqa
     path('inseminations/<int:pk>/detail/', views.InseminationDetailView.as_view(), name='insemination_detail'), # noqa
     path('inseminations/<int:pk>/check/', views.InseminationCheckView.as_view(), name='insemination_check'),  # noqa
+    path('inseminations/<int:pk>/delete/', views.InseminationDeleteView.as_view(), name='insemination_delete'),  # noqa
 ]

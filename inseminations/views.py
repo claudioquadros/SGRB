@@ -38,3 +38,9 @@ class InseminationCheckView(UpdateView):
     template_name = 'insemination_check.html'
     form_class = forms.InseminationCheckForm
     success_url = reverse_lazy('insemination_list')
+
+
+class InseminationDeleteView(DeleteView):
+    model = models.Insemination
+    template_name = 'insemination_delete.html'
+    success_url = reverse_lazy('insemination_list')
