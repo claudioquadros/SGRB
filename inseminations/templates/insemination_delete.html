@@ -13,15 +13,19 @@
       </div>
     </div>
       <div class="card-body">
-        <p class="card-text">Tem certeza que deseja excluir a Inseminação da <strong>{{ object.animal.name }} </strong>?</p>
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Deletar</button>
-        </form>
+        {% if object.is_pregnant is None %}
+          <p class="card-text">Tem certeza que deseja excluir a Inseminação da <strong>{{ object.animal.name }} </strong>?</p>
+          <form method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Deletar</button>
+          </form>
+        {% else %}
+          <div class="alert alert-warning">
+            Essa inseminação já teve a verificação de prenhez realizada e <strong>não pode ser excluída</strong>.
+          </div>        
+        {% endif %}
       </div>
     </div>
     <a href="{% url 'animal_list' %}" class="btn btn-secondary mt-3"> Cancelar e Voltar para a Lista de Animais</a>  
   </div>
-
-
 {% endblock content %}

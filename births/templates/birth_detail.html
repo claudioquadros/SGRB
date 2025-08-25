@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h3 class="display-6">Detalhes do Parto</h3>
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">{{ object.animal.name }}</h3>
+
+        <p class="card-text"> 
+          <strong>Inseminação:</strong>
+          {% if object.insemination %}
+            {{ object.insemination.date_of_insemination|date:"d/m/Y" }}
+          {% else %}
+            Não vinculada
+          {% endif %}
+        </p>
+
+        <p class="card-text"> 
+          <strong>Data prevista para parto:</strong>
+          {% if object.expected_birth %}
+            {{ object.expected_birth|date:"d/m/Y" }}
+          {% else %}
+            -
+          {% endif %}
+        </p>
+
+        <p class="card-text"> 
+          <strong>Data prevista para secagem:</strong>
+          {% if object.expected_dry %}
+            {{ object.expected_dry|date:"d/m/Y" }}
+          {% else %}
+            -
+          {% endif %}
+        </p>
+
+        <p class="card-text"> 
+          <strong>Data de secagem:</strong>
+          {% if object.dry %}
+            {{ object.dry|date:"d/m/Y" }}
+          {% else %}
+            -
+          {% endif %}
+        </p>
+
+        <p class="card-text"> 
+          <strong>Data do parto:</strong>
+          {% if object.birth %}
+            {{ object.birth|date:"d/m/Y" }}
+          {% else %}
+            -
+          {% endif %}
+        </p>
+
+        <p class="card-text">
+          <strong>Data de inserção:</strong>
+          {{ object.created_at|date:"d/m/Y H:i" }}
+        </p>
+
+        <p class="card-text">
+          <strong>Última atualização:</strong>
+          {{ object.updated_at|date:"d/m/Y H:i" }}
+        </p>
+      </div>
+    </div>
+    <a href="{% url 'birth_list' %}" class="btn btn-secondary mt-3">Voltar para Lista de Partos</a>
+  </div>
+{% endblock %}

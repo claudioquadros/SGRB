@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView  # noqa
 from . import models, forms
@@ -44,3 +45,11 @@ class InseminationDeleteView(DeleteView):
     model = models.Insemination
     template_name = 'insemination_delete.html'
     success_url = reverse_lazy('insemination_list')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # Impede deletar se já tem verificação de prenhez
+        if self.object.is_pregnant is not None:
+            # Aqui você pode lançar erro ou só redirecionar com msg
+            return redirect('insemination_list')
+        return super().delete(request, *args, **kwargs)

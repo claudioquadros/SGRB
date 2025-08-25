@@ -10,4 +10,5 @@ urlpatterns = [
     path('', include('farms.urls')),
     path('', include('animals.urls')),
     path('', include('inseminations.urls')),
+    path('', include('births.urls')),
 ]

@@ -46,9 +46,23 @@ class InseminationRegisterForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         date_of_insemination = cleaned_data.get("date_of_insemination")
+        animal = cleaned_data.get("animal")
+
+        # Impedir nova inseminação se já existir uma pendente para esse animal
+        if animal:
+            from .models import Insemination
+            existe_pendente = Insemination.objects.filter(
+                animal=animal,
+                is_pregnant__isnull=True,   # ainda não verificado
+                pregnancy_check__isnull=True
+            ).exists()
+
+            if existe_pendente:
+                raise forms.ValidationError(
+                    f"O animal {animal} já possui uma inseminação pendente de verificação."  # noqa
+                )
 
         if date_of_insemination:
-            # Apenas sugere a data se o usuário não alterou
             if not cleaned_data.get("expected_pregnancy"):
                 cleaned_data["expected_pregnancy"] = date_of_insemination + timedelta(days=10)  # noqa
 
