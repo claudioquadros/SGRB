@@ -1,5 +1,6 @@
 from django import forms
 from . import models
+from django.utils.timezone import now
 
 
 class BirthForm(forms.ModelForm):
@@ -59,3 +60,45 @@ class BirthUpdateForm(forms.ModelForm):
 
         # animal só para visualização
         self.fields['animal'].required = False
+
+
+class BirthCheckDryUpdateForm(forms.ModelForm):
+    class Meta:
+        model = models.Birth
+        fields = ['dry']
+        widgets = {
+            'dry': forms.DateInput(
+                attrs={'type': 'date'},
+                format='%Y-%m-%d'
+            )
+        }
+        labels = {
+            'dry': 'Data da Secagem',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Preenche com a data atual se não tiver valor
+        if not self.instance.dry:
+            self.initial['dry'] = now().date()
+
+
+class BirthCheckBirthUpdateForm(forms.ModelForm):
+    class Meta:
+        model = models.Birth
+        fields = ['birth']
+        widgets = {
+            'birth': forms.DateInput(
+                attrs={'type': 'date'},
+                format='%Y-%m-%d'
+            )
+        }
+        labels = {
+            'birth': 'Data do Parto',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Preencher automaticamente com a data de hoje
+        if not self.instance.birth:
+            self.initial['birth'] = now().date()

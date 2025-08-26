@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Registrar Secagem - {{ object.animal.name }}</h2>
+  <div class="card p-3 mb-3">
+    <p><strong>Animal:</strong> {{ object.animal.name }}</p>
+    <p><strong>Inseminação:</strong> {{ object.insemination.date_of_insemination|date:"d/m/Y" }}</p>
+    <p><strong>Previsão de Parto:</strong> {{ object.expected_birth|date:"d/m/Y" }}</p>
+    <p><strong>Previsão de Secagem:</strong> {{ object.expected_dry|date:"d/m/Y" }}</p>
+    <p><strong>Secagem Lançada:</strong> 
+        {% if object.dry %} {{ object.dry|date:"d/m/Y" }} {% else %} <em>Não lançada</em> {% endif %}
+    </p>
+    <p><strong>Parto Lançado:</strong> 
+        {% if object.birth %} {{ object.birth|date:"d/m/Y" }} {% else %} <em>Não lançado</em> {% endif %}
+    </p>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{% url 'birth_list' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

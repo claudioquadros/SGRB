@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView  # noqa
 from . import models, forms
@@ -36,6 +38,37 @@ class BirthUpdateView(UpdateView):
     template_name = 'birth_update.html'
     form_class = forms.BirthUpdateForm
     success_url = reverse_lazy('birth_list')
+
+
+class CheckDryUpdateView(UpdateView):
+    model = models.Birth
+    form_class = forms.BirthCheckDryUpdateForm
+    template_name = 'birth_check_dry.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        birth = self.get_object()
+
+        if birth.dry or birth.birth:
+            messages.error(request, "Não é possível lançar secagem para este animal.")  # noqa
+            return redirect('birth_list')
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        messages.success(self.request, "Data de secagem registrada com sucesso!")  # noqa
+        return reverse_lazy('birth_list')
+
+
+class CheckBirthUpdateView(UpdateView):
+    model = models.Birth
+    form_class = forms.BirthCheckBirthUpdateForm
+    template_name = "birth_check_birth.html"
+
+    def get_queryset(self):
+        return models.Birth.objects.filter(birth__isnull=True)
+
+    def get_success_url(self):
+        return reverse_lazy("birth_list")
 
 
 class BirthDeleteView(DeleteView):

@@ -35,9 +35,9 @@
           <th>Animal</th>
           <th>Inseminação</th>
           <th>Previsão Parto</th>
-          <th>Data Parto</th>
-          <th>Data Secagem</th>
-          <th>Criado em</th>
+          <th>Previsão Secagem</th>
+          <th>Secagem</th>
+          <th>Parto</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -46,17 +46,23 @@
           <tr>
             <td>{{ birth.id }}</td>
             <td>{{ birth.animal }}</td>
-            <td>{{ birth.insemination.date_of_insemination|default:"-" }}</td>
+            <td>{{ birth.insemination.date_of_insemination|date:"d/m/Y" }}</td>
             <td>{{ birth.expected_birth|date:"d/m/Y" }}</td>
-            <td>{{ birth.birth|date:"d/m/Y" }}</td>
+            <td>{{ birth.expected_dry|date:"d/m/Y" }}</td>
             <td>{{ birth.dry|date:"d/m/Y" }}</td>
-            <td>{{ birth.created_at|date:"d/m/Y H:i" }}</td>
+            <td>{{ birth.birth|date:"d/m/Y" }}</td>
             <td>
               <a href="{% url "birth_detail" birth.id %}" class="btn btn-info btn-sm">
                 <i class="bi bi-eye"></i>
               </a>
               <a href="{% url "birth_update" birth.id %}" class="btn btn-warning btn-sm">
                 <i class="bi bi-pencil"></i>
+              </a>
+              <a href="{% url "birth_check_dry" birth.id %}" class="btn btn-warning btn-sm">
+                <i class="bi bi-droplet-half"></i>
+              </a>
+              <a href="{% url "birth_check_birth" birth.id %}" class="btn btn-warning btn-sm">
+                <i class="bi-star-fill"></i>
               </a>
               <a href="{% url "birth_delete" birth.id %}" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash"></i>
