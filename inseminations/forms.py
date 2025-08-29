@@ -87,3 +87,11 @@ class InseminationCheckForm(forms.ModelForm):
             'pregnancy_check': 'Data da Verificação da Prenhez',
             'is_pregnant': 'Está Prenha?',
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance and self.instance.pregnancy_check:
+            self.initial['pregnancy_check'] = self.instance.pregnancy_check.strftime('%Y-%m-%d')  # noqa
+        else:
+            self.initial['pregnancy_check'] = now().date().strftime('%Y-%m-%d')

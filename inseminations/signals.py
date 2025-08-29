@@ -9,9 +9,10 @@ from births.models import Birth
 def create_birth_for_pregnant_update(sender, instance, **kwargs):
     if instance.is_pregnant == "S":
         if not Birth.objects.filter(insemination=instance).exists():
-            print('também passou por aqui')
             expected_birth = instance.date_of_insemination + timedelta(days=282)  # noqa
-            expected_dry = expected_birth - timedelta(days=50)
+            expected_dry = None
+            if instance.animal.category and instance.animal.category.name.lower() != "novilha":  # noqa
+                expected_dry = expected_birth - timedelta(days=50)
             Birth.objects.create(
                 animal=instance.animal,
                 insemination=instance,

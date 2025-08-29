@@ -38,6 +38,13 @@ class AnimalUpdateView(UpdateView):
     success_url = reverse_lazy('animal_list')
 
 
+class AnimalCullingView(UpdateView):
+    model = models.Animal
+    template_name = 'animal_culling.html'
+    form_class = forms.AnimalCullingForm
+    success_url = reverse_lazy('animal_list')
+
+
 class AnimalDeleteView(DeleteView):
     model = models.Animal
     template_name = 'animal_delete.html'

@@ -1,6 +1,7 @@
 from django import forms
-from . import models
 from django.utils.timezone import now
+from django.core.exceptions import ValidationError
+from . import models
 
 
 class BirthForm(forms.ModelForm):
@@ -78,9 +79,17 @@ class BirthCheckDryUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Preenche com a data atual se não tiver valor
         if not self.instance.dry:
             self.initial['dry'] = now().date()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        dry = cleaned_data.get("dry")
+
+        if not self.instance.expected_dry and dry:
+            raise ValidationError("Este animal não possui previsão de secagem (novilha).")  # noqa
+
+        return cleaned_data
 
 
 class BirthCheckBirthUpdateForm(forms.ModelForm):
@@ -99,6 +108,5 @@ class BirthCheckBirthUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Preencher automaticamente com a data de hoje
         if not self.instance.birth:
             self.initial['birth'] = now().date()

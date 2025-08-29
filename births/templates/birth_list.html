@@ -58,12 +58,16 @@
               <a href="{% url "birth_update" birth.id %}" class="btn btn-warning btn-sm">
                 <i class="bi bi-pencil"></i>
               </a>
-              <a href="{% url "birth_check_dry" birth.id %}" class="btn btn-warning btn-sm">
-                <i class="bi bi-droplet-half"></i>
-              </a>
-              <a href="{% url "birth_check_birth" birth.id %}" class="btn btn-warning btn-sm">
-                <i class="bi-star-fill"></i>
-              </a>
+              {% if birth.expected_dry %}
+                <a href="{% url "birth_check_dry" birth.id %}" class="btn btn-warning btn-sm">
+                  <i class="bi bi-droplet-half"></i>
+                </a>
+              {% endif %}
+              {% if birth.expected_birth %}
+                <a href="{% url "birth_check_birth" birth.id %}" class="btn btn-warning btn-sm">
+                 <i class="bi-star-fill"></i>
+                </a>
+              {% endif %}
               <a href="{% url "birth_delete" birth.id %}" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash"></i>
               </a>

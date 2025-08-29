@@ -36,6 +36,7 @@
           <th>Propriedade</th>
           <th>Raça</th>
           <th>Categoria</th>
+          <th>Baixa</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -48,6 +49,13 @@
             <td>{{ animal.breed }}</td>
             <td>{{ animal.category }}</td>
             <td>
+                {% if animal.culling_date %}
+                  {{ animal.culling_date|date:'d/m/Y' }}
+                {% else %}
+                  -
+                {% endif %}
+            </td>
+            <td>
               <a href="{% url "animal_detail" animal.id %}" class="btn btn-info btn-sm">
                 <i class="bi bi-eye"></i>
               </a>
@@ -56,6 +64,9 @@
               </a>
               <a href="{% url "animal_delete" animal.id %}" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash"></i>
+              </a>
+              <a href="{% url "animal_culling" animal.id %}" class="btn btn-danger btn-sm">
+                <i class="bi bi-exclamation-triangle text-warning"></i>
               </a>
             </td>
           </tr>  

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h3 class="display-6">Baixar Animal</h3>
+
+    <div class="card">
+      <div class="card-body">
+
+        <!-- Dados do animal -->
+        <h5 class="mb-3">Informações do Animal</h5>
+        <ul class="list-group mb-4">
+          <li class="list-group-item"><strong>Nome:</strong> {{ object.name }}</li>
+          <li class="list-group-item"><strong>Data de Nascimento:</strong> {{ object.birth|date:"d/m/Y" }}</li>
+          <li class="list-group-item"><strong>Fazenda:</strong> {{ object.farm }}</li>
+          <li class="list-group-item"><strong>Raça:</strong> {{ object.breed }}</li>
+          <li class="list-group-item"><strong>Categoria:</strong> {{ object.category }}</li>
+        </ul>
+
+        <!-- Formulário de baixa -->
+        <h5 class="mb-3">Registrar Baixa</h5>
+        <form method="post" class="form">
+          {% csrf_token %}
+          <div class="mb-3">
+            {{ form.culling_date.label_tag }}
+            {{ form.culling_date }}
+          </div>
+          <div class="mb-3">
+            {{ form.culling_reason.label_tag }}
+            {{ form.culling_reason }}
+          </div>
+          <button type="submit" class="btn btn-primary">Salvar Baixa</button>
+        </form>
+
+      </div>
+    </div>
+
+    <a href="{% url 'animal_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Animais</a>
+  </div>
+{% endblock %}

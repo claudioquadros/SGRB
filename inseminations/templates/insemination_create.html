@@ -6,7 +6,6 @@
 
     <div class="card">
       <div class="card-body">
-        {# mensagens de erro gerais do form #}
         {% if form.non_field_errors %}
           <div class="alert alert-danger">
             {% for error in form.non_field_errors %}
@@ -17,9 +16,25 @@
         <form method="post" class="form">
           {% csrf_token %}
 
-          <div class="form-group">
-            {{ form.animal.label_tag }}
-            {{ form.animal }}
+          <div class="row mb-3">
+            <div class="col-md-6">
+              {{ form.animal.label_tag }}
+              <select name="animal" id="id_animal" class="form-select">
+                <option value="">-----</option>
+                {% for animal in form.fields.animal.queryset %}
+                  <option value="{{ animal.id }}"
+                          data-category="{{ animal.category.name }}"
+                          {% if form.initial.animal == animal.id %}selected{% endif %}>
+                    {{ animal.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label>Categoria do Animal</label>
+              <input type="text" id="animal-category" class="form-control" readonly>
+            </div>
           </div>
 
           <div class="row mb-3">
@@ -44,15 +59,22 @@
   </div>
 
   <script>
-    // Seleciona os campos pelo atributo name
+    const animalSelect = document.getElementById('id_animal');
+    const categoryInput = document.getElementById('animal-category');
+
+    function updateCategory() {
+      const selected = animalSelect.options[animalSelect.selectedIndex];
+      categoryInput.value = selected.getAttribute('data-category') || '';
+    }
+    updateCategory();
+    animalSelect.addEventListener('change', updateCategory);
     const inseminationDate = document.querySelector('input[name="date_of_insemination"]');
     const expectedPregnancy = document.querySelector('input[name="expected_pregnancy"]');
 
     inseminationDate.addEventListener('change', function() {
       if (inseminationDate.value) {
         const date = new Date(inseminationDate.value);
-        date.setDate(date.getDate() + 10); // soma 10 dias
-        // Ajusta o formato YYYY-MM-DD
+        date.setDate(date.getDate() + 10);
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
