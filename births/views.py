@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # noqa
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -5,11 +6,12 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 from . import models, forms
 
 
-class BirthListView(ListView):
+class BirthListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):  # noqa
     model = models.Birth
     template_name = 'birth_list.html'
     context_object_name = 'births'
     paginate_by = 10
+    permission_required = 'births.view_birth'
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -21,29 +23,33 @@ class BirthListView(ListView):
         return queryset
 
 
-class BirthCreateView(CreateView):
+class BirthCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):  # noqa
     model = models.Birth
     template_name = "birth_create.html"
     form_class = forms.BirthForm
     success_url = reverse_lazy('birth_list')
+    permission_required = 'births.add_birth'
 
 
-class BirthDetailView(DetailView):
+class BirthDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView): # noqa
     model = models.Birth
     template_name = 'birth_detail.html'
+    permission_required = 'births.view_birth'
 
 
-class BirthUpdateView(UpdateView):
+class BirthUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView): # noqa
     model = models.Birth
     template_name = 'birth_update.html'
     form_class = forms.BirthUpdateForm
     success_url = reverse_lazy('birth_list')
+    permission_required = 'births.change_birth'
 
 
-class CheckDryUpdateView(UpdateView):
+class CheckDryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView): # noqa
     model = models.Birth
     form_class = forms.BirthCheckDryUpdateForm
     template_name = 'birth_check_dry.html'
+    permission_required = 'births.change_birth'
 
     def dispatch(self, request, *args, **kwargs):
         birth = self.get_object()
@@ -59,10 +65,11 @@ class CheckDryUpdateView(UpdateView):
         return reverse_lazy('birth_list')
 
 
-class CheckBirthUpdateView(UpdateView):
+class CheckBirthUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView): # noqa
     model = models.Birth
     form_class = forms.BirthCheckBirthUpdateForm
     template_name = "birth_check_birth.html"
+    permission_required = 'births.change_birth'
 
     def get_queryset(self):
         return models.Birth.objects.filter(birth__isnull=True)
@@ -71,7 +78,8 @@ class CheckBirthUpdateView(UpdateView):
         return reverse_lazy("birth_list")
 
 
-class BirthDeleteView(DeleteView):
+class BirthDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView): # noqa
     model = models.Birth
     template_name = 'birth_delete.html'
     success_url = reverse_lazy('birth_list')
+    permission_required = 'births.delete_birth'

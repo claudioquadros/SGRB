@@ -1,13 +1,15 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # noqa
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView  # noqa
 from . import models, forms
 
 
-class AnimalListView(ListView):
+class AnimalListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.Animal
     template_name = 'animal_list.html'
     context_object_name = 'animals'
     paginate_by = 10
+    permission_required = 'animals.view_animal'
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -19,33 +21,38 @@ class AnimalListView(ListView):
         return queryset
 
 
-class AnimalCreateView(CreateView):
+class AnimalCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):  # noqa
     model = models.Animal
     template_name = "animal_create.html"
     form_class = forms.AnimalForm
     success_url = reverse_lazy('animal_list')
+    permission_required = 'animals.add_animal'
 
 
-class AnimalDetailView(DetailView):
+class AnimalDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):  # noqa
     model = models.Animal
     template_name = 'animal_detail.html'
+    permission_required = 'animals.view_animal'
 
 
-class AnimalUpdateView(UpdateView):
+class AnimalUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):  # noqa
     model = models.Animal
     template_name = 'animal_update.html'
     form_class = forms.AnimalForm
     success_url = reverse_lazy('animal_list')
+    permission_required = 'animals.change_animal'
 
 
-class AnimalCullingView(UpdateView):
+class AnimalCullingView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView): # noqa
     model = models.Animal
     template_name = 'animal_culling.html'
     form_class = forms.AnimalCullingForm
     success_url = reverse_lazy('animal_list')
+    permission_required = 'animals.change_animal'
 
 
-class AnimalDeleteView(DeleteView):
+class AnimalDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView): # noqa
     model = models.Animal
     template_name = 'animal_delete.html'
     success_url = reverse_lazy('animal_list')
+    permission_required = 'animals.delete_animal'
