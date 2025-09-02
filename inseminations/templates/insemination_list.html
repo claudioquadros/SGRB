@@ -11,10 +11,11 @@
           </div>
         </form>
       </div>
-
-      <div class="col-md-6">
-        <a href="{% url 'insemination_create' %}" class="btn btn-success float-end"><i class="bi bi-plus"></i> Nova Inseminação</a>
-      </div>
+      {% if perms.inseminations.add_insemination %}{% endif %}
+        <div class="col-md-6">
+          <a href="{% url 'insemination_create' %}" class="btn btn-success float-end"><i class="bi bi-plus"></i> Nova Inseminação</a>
+        </div>
+      
     </div>
     <div class="card">
       <div class="card-body">
@@ -57,13 +58,23 @@
                     {% endif %}
                   </td>
                   <td>
-                    <a href="{% url 'insemination_detail' insemination.id %}" class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
-                    <a href="{% url 'insemination_check' insemination.id %}" class="btn btn-warning btn-sm"><i class="bi bi-check-lg"></i></a>
-                    {% if insemination.is_pregnant is None %}
-                      <a href="{% url 'insemination_delete' insemination.id %}" class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash"></i>
+                    {% if perms.inseminations.view_insemination %}
+                      <a href="{% url 'insemination_detail' insemination.id %}" class="btn btn-info btn-sm">
+                        <i class="bi bi-eye"></i>
                       </a>
-                    {% endif %}                  
+                    {% endif %}
+                    {% if perms.inseminations.change_insemination %}
+                      <a href="{% url 'insemination_check' insemination.id %}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-check-lg"></i>
+                      </a>
+                    {% endif %}
+                    {% if perms.inseminations.delete_insemination %}
+                      {% if insemination.is_pregnant is None %}
+                        <a href="{% url 'insemination_delete' insemination.id %}" class="btn btn-danger btn-sm">
+                          <i class="bi bi-trash"></i>
+                        </a>
+                      {% endif %}
+                    {% endif %}
                   </td>
                 </tr>
               {% endfor %}

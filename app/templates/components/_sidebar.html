@@ -7,48 +7,62 @@
       </button>
       <div class="collapse d-sm-block" id="menuCollapse">
         <ul class="nav flex-column align-items-start" id="menu">
-          <li>
-            <a href="{% url "company_list" %}" class="nav-link px-0 align-middle">
-              <i class="bi bi-diagram-3 fs-4"></i>
-              <span class="ms-1">Companhia</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url "farm_list" %}" class="nav-link px-0 align-middle">
-              <i class="bi bi-map fs-4"></i>
-              <span class="ms-1">Propriedades</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url "breed_list" %}" class="nav-link px-0 align-middle">
-              <i class="bi bi-bar-chart fs-4"></i>
-              <span class="ms-1">Raça</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url "category_list" %}" class="nav-link px-0 align-middle">
-              <i class="bi bi-tags fs-4"></i>
-              <span class="ms-1">Categorias</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url "animal_list" %}" class="nav-link px-0 align-middle">
-              <i class="bi bi-box fs-4"></i>
-              <span class="ms-1">Animais</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url "insemination_list" %}" class="nav-link px-0 align-middle">
-              <i class="bi bi-droplet fs-4"></i>
-              <span class="ms-1">Inseminação</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url "birth_list" %}" class="nav-link px-0 align-middle">
-              <i class="bi bi-gift fs-4"></i>
-              <span class="ms-1">Partos</span>
-            </a>
-          </li>
+          {% if perms.companies.view_company %}
+            <li>
+              <a href="{% url "company_list" %}" class="nav-link px-0 align-middle">
+                <i class="bi bi-diagram-3 fs-4"></i>
+                <span class="ms-1">Companhia</span>
+              </a>
+            </li>
+          {% endif %}
+          {% if perms.farms.view_farm %}
+            <li>
+              <a href="{% url "farm_list" %}" class="nav-link px-0 align-middle">
+                <i class="bi bi-map fs-4"></i>
+                <span class="ms-1">Propriedades</span>
+              </a>
+            </li>
+          {% endif %}  
+          {% if perms.breeds.view_breed %}
+            <li>
+              <a href="{% url "breed_list" %}" class="nav-link px-0 align-middle">
+                <i class="bi bi-bar-chart fs-4"></i>
+                <span class="ms-1">Raça</span>
+              </a>
+            </li>
+          {% endif %}
+          {% if perms.categories.view_category %}
+            <li>
+              <a href="{% url "category_list" %}" class="nav-link px-0 align-middle">
+                <i class="bi bi-tags fs-4"></i>
+                <span class="ms-1">Categorias</span>
+              </a>
+            </li>
+          {% endif %}
+          {% if perms.animals.view_animal %}
+            <li>
+              <a href="{% url "animal_list" %}" class="nav-link px-0 align-middle">
+                <i class="bi bi-box fs-4"></i>
+                <span class="ms-1">Animais</span>
+              </a>
+            </li>
+          {% endif %}
+          {% if perms.inseminations.view_insemination %}
+            <li>
+              <a href="{% url "insemination_list" %}" class="nav-link px-0 align-middle">
+                <i class="bi bi-droplet fs-4"></i>
+                <span class="ms-1">Inseminação</span>
+              </a>
+            </li>
+          {% endif %}
+          {% if perms.births.view_birth %}
+            <li>
+              <a href="{% url "birth_list" %}" class="nav-link px-0 align-middle">
+                <i class="bi bi-gift fs-4"></i>
+                <span class="ms-1">Partos</span>
+              </a>
+            </li>
+          {% endif %}
           <li class="nav-item">
             {% if user.is_authenticated %}
               <form action="{% url 'logout' %}" method="post" id="logout-form" class="nav-link px-0 align-middle">

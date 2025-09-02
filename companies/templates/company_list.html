@@ -18,13 +18,13 @@
         </div>  
       </form>
     </div>
-
-    <div class="col-md-6">
-      <a href="{% url 'company_create' %}" class="btn btn-success float-end">
-        <i class="bi bi-plus"></i> Nova Companhia
-      </a>
-    </div>
-
+    {% if perms.companies.add_company %}
+      <div class="col-md-6">
+        <a href="{% url 'company_create' %}" class="btn btn-success float-end">
+          <i class="bi bi-plus"></i> Nova Companhia
+        </a>
+      </div>
+    {% endif %}
   </div>
 
   <div class="table-responsive">
@@ -42,15 +42,21 @@
             <td>{{ company.id }}</td>
             <td>{{ company.name}}</td>
             <td>
-              <a href="{% url "company_detail" company.id %}" class="btn btn-info btn-sm">
-                <i class="bi bi-eye"></i>
-              </a>
-              <a href="{% url "company_update" company.id %}" class="btn btn-warning btn-sm">
-                <i class="bi bi-pencil"></i>
-              </a>
-              <a href="{% url "company_delete" company.id %}" class="btn btn-danger btn-sm">
-                <i class="bi bi-trash"></i>
-              </a>
+              {% if perms.companies.view_company %}
+                <a href="{% url "company_detail" company.id %}" class="btn btn-info btn-sm">
+                  <i class="bi bi-eye"></i>
+                </a>
+              {% endif %}
+              {% if perms.companies.change_company %}
+                <a href="{% url "company_update" company.id %}" class="btn btn-warning btn-sm">
+                  <i class="bi bi-pencil"></i>
+                </a>
+              {% endif %}
+              {% if perms.companies.delete_company %}
+                <a href="{% url "company_delete" company.id %}" class="btn btn-danger btn-sm">
+                  <i class="bi bi-trash"></i>
+                </a>
+              {% endif %}
             </td>
           </tr>  
         {% endfor %}

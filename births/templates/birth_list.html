@@ -18,13 +18,13 @@
         </div>  
       </form>
     </div>
-
-    <div class="col-md-6">
-      <a href="{% url 'birth_create' %}" class="btn btn-success float-end">
-        <i class="bi bi-plus"></i> Novo Nascimento
-      </a>
-    </div>
-
+    {% if  perms.births.add_birth %}
+      <div class="col-md-6">
+        <a href="{% url 'birth_create' %}" class="btn btn-success float-end">
+          <i class="bi bi-plus"></i> Novo Nascimento
+        </a>
+      </div>
+    {% endif %}
   </div>
 
   <div class="table-responsive">
@@ -52,25 +52,36 @@
             <td>{{ birth.dry|date:"d/m/Y" }}</td>
             <td>{{ birth.birth|date:"d/m/Y" }}</td>
             <td>
+              {% if  perms.births.view_birth %}
               <a href="{% url "birth_detail" birth.id %}" class="btn btn-info btn-sm">
                 <i class="bi bi-eye"></i>
               </a>
+              {% endif %}
+
+              {% if  perms.births.change_birth %}
               <a href="{% url "birth_update" birth.id %}" class="btn btn-warning btn-sm">
                 <i class="bi bi-pencil"></i>
               </a>
-              {% if birth.expected_dry %}
-                <a href="{% url "birth_check_dry" birth.id %}" class="btn btn-warning btn-sm">
-                  <i class="bi bi-droplet-half"></i>
+              {% endif %}
+
+              {% if  perms.births.change_birth %}
+                {% if birth.expected_dry %}
+                  <a href="{% url "birth_check_dry" birth.id %}" class="btn btn-warning btn-sm">
+                    <i class="bi bi-droplet-half"></i>
+                  </a>
+                {% endif %}
+                {% if birth.expected_birth %}
+                  <a href="{% url "birth_check_birth" birth.id %}" class="btn btn-warning btn-sm">
+                  <i class="bi-star-fill"></i>
+                  </a>
+                {% endif %}
+              {% endif %}
+
+              {% if  perms.births.delete_birth %}
+                <a href="{% url "birth_delete" birth.id %}" class="btn btn-danger btn-sm">
+                  <i class="bi bi-trash"></i>
                 </a>
               {% endif %}
-              {% if birth.expected_birth %}
-                <a href="{% url "birth_check_birth" birth.id %}" class="btn btn-warning btn-sm">
-                 <i class="bi-star-fill"></i>
-                </a>
-              {% endif %}
-              <a href="{% url "birth_delete" birth.id %}" class="btn btn-danger btn-sm">
-                <i class="bi bi-trash"></i>
-              </a>
             </td>
           </tr>  
         {% empty %}
