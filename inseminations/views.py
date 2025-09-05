@@ -14,15 +14,22 @@ class InseminationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
+        farm_id = self.request.GET.get('farm')
+        if farm_id:
+            queryset = queryset.filter(animal__farm_id=farm_id)
+
         name = self.request.GET.get('name')
-
         if name:
-            queryset = queryset.filter(name__icontains=name)
-
-        queryset = queryset.order_by('expected_pregnancy')
+            queryset = queryset.filter(animal__name__icontains=name)
 
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from farms.models import Farm
+        context["farms"] = Farm.objects.all()
+        return context
 
 class InseminationCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):  # noqa
     model = models.Insemination

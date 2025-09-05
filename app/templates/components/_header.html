@@ -1,5 +1,20 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand text-white" href="#">Sistema de Gestão de Reprodução Bovina (SGRB)</a>
+<nav class="navbar navbar-dark bg-dark shadow-sm border-bottom border-secondary">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    
+    <span class="navbar-brand mb-0 h5 fw-bold d-flex align-items-center">
+      <i class="bi bi-cow me-2"></i>  
+      <span style="background-color:#4285F4; color:black; padding:2px 6px; border-radius:4px;">
+        SGRB
+      </span>
+      <span class="ms-2 text-white">- Sistema de Gestão de Reprodução Bovina</span>
+    </span>
+    
+    {% if user.is_authenticated %}
+      <div class="d-flex align-items-center">
+        <i class="bi bi-person-circle text-white me-2 fs-5"></i>
+        <span class="text-white small me-3">{{ user.username }}</span>
+      </div>
+    {% endif %}
+    
   </div>
 </nav>

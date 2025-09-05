@@ -6,26 +6,44 @@
 
 {% block content %}
 
-  <div class="row mb-3">
+  <form method="get" action="{% url 'birth_list' %}">
+    <div class="row g-2 align-items-end mb-3">
 
-    <div class="col-md-6">
-      <form method="get" action="{% url 'birth_list' %}">
+      <div class="col-md-4">
+        <label for="farm" class="form-label">Propriedade</label>
+        <select name="farm" id="farm" class="form-select" onchange="this.form.submit()">
+          <option value="">-- Todas --</option>
+          {% for f in farms %}
+            <option value="{{ f.id }}" {% if request.GET.farm|stringformat:"s" == f.id|stringformat:"s" %}selected{% endif %}>
+              {{ f.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label for="name" class="form-label">Nome</label>
         <div class="input-group">
-          <input type="text" class="form-control" name="animal" placeholder="Animal" value="{{ request.GET.animal }}">
+          <input type="text" class="form-control" id="name" name="name"
+                placeholder="Nome" value="{{ request.GET.name }}">
           <button type="submit" class="btn btn-primary">
             <i class="bi bi-search"></i>
           </button>
-        </div>  
-      </form>
-    </div>
-    {% if  perms.births.add_birth %}
-      <div class="col-md-6">
-        <a href="{% url 'birth_create' %}" class="btn btn-success float-end">
-          <i class="bi bi-plus"></i> Novo Nascimento
-        </a>
+        </div>
       </div>
-    {% endif %}
-  </div>
+
+      <div class="col-md-4 d-flex gap-2">
+        <a href="{% url 'birth_list' %}" class="btn btn-outline-secondary">
+          Limpar
+        </a>
+        {% if perms.births.add_birth %}
+          <a href="{% url 'birth_create' %}" class="btn btn-success">
+            <i class="bi bi-plus"></i> Novo Parto
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </form>
 
   <div class="table-responsive">
     <table class="table table-striped table-bordered">

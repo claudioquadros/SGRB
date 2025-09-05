@@ -1,22 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="container mt-4">
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <form method="get" action="{% url 'insemination_list' %}">
-          <div class="input-group">
-            <input type="text" class="form-control" name="name" placeholder="Nome" value="{{ request.GET.name }}" />
-            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
-          </div>
-        </form>
+  <form method="get" action="{% url 'insemination_list' %}">
+    <div class="row g-2 align-items-end mb-3">
+
+      <div class="col-md-4">
+        <label for="farm" class="form-label">Propriedade</label>
+        <select name="farm" id="farm" class="form-select" onchange="this.form.submit()">
+          <option value="">-- Todas --</option>
+          {% for f in farms %}
+            <option value="{{ f.id }}" {% if request.GET.farm|stringformat:"s" == f.id|stringformat:"s" %}selected{% endif %}>
+              {{ f.name }}
+            </option>
+          {% endfor %}
+        </select>
       </div>
-      {% if perms.inseminations.add_insemination %}{% endif %}
-        <div class="col-md-6">
-          <a href="{% url 'insemination_create' %}" class="btn btn-success float-end"><i class="bi bi-plus"></i> Nova Inseminação</a>
+
+      <div class="col-md-4">
+        <label for="name" class="form-label">Nome</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="name" name="name"
+                placeholder="Nome" value="{{ request.GET.name }}">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i>
+          </button>
         </div>
-      
+      </div>
+
+      <div class="col-md-4 d-flex gap-2">
+        <a href="{% url 'insemination_list' %}" class="btn btn-outline-secondary">
+          Limpar
+        </a>
+        {% if perms.inseminations.add_insemination %}
+          <a href="{% url 'insemination_create' %}" class="btn btn-success">
+            <i class="bi bi-plus"></i> Nova Inseminação
+          </a>
+        {% endif %}
+      </div>
     </div>
+  </form>
+
     <div class="card">
       <div class="card-body">
         {% if inseminations %}
