@@ -32,6 +32,13 @@
       </div>
     </div>
 
-    <a href="{% url 'insemination_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Inseminações</a>
+    <a href="{% if request.GET.next == 'overview' %}
+                {% url 'animal_overview' %}
+            {% else %}
+                {% url 'insemination_list' %}
+            {% endif %}"
+      class="btn btn-secondary mt-3">
+      Cancelar e Voltar
+    </a>
   </div>
 {% endblock %}

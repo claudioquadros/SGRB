@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-4">Visão Geral dos Animais</h3>
+
+  <!-- Filtros -->
+  <form method="get" action="">
+    <div class="row g-2 align-items-end mb-3">
+
+      <!-- filtro por propriedade -->
+      <div class="col-md-4">
+        <label for="farm" class="form-label">Propriedade</label>
+        <select name="farm" id="farm" class="form-select" onchange="this.form.submit()">
+          <option value="">-- Todas --</option>
+          {% for f in farms %}
+            <option value="{{ f.id }}" {% if request.GET.farm|stringformat:"s" == f.id|stringformat:"s" %}selected{% endif %}>
+              {{ f.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- filtro por nome -->
+      <div class="col-md-4">
+        <label for="name" class="form-label">Nome</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="name" name="name"
+                 placeholder="Nome do Animal" value="{{ request.GET.name }}">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i>
+          </button>
+          <a href="{% url 'animal_overview' %}" class="btn btn-outline-secondary">Limpar</a>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+  <!-- Tabela -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Nome</th>
+          <th>Nascimento</th>
+          <th>Última Inseminação</th>
+          <th>Verificar Prenhez</th>
+          <th>Verificada Prenhez</th>
+          <th>Está Prenha?</th>
+          <th>Previsão Parto</th>
+          <th>Previsão Secagem</th>
+          <th>Secagem</th>
+          <th>Data Parto</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for animal in animals %}
+        <tr>
+          <td>{{ animal.name }}</td>
+          <td>{{ animal.birth|date:"d/m/Y" }}</td>
+          <td>{{ animal.ultima_inseminacao|date:"d/m/Y" }}</td>
+          <td>
+            {% if animal.prenhez_verificacao %}
+              {% if not animal.prenhez_verificada %}
+                {% if animal.prenhez_verificacao <= today %}
+                  <a href="{% url 'insemination_check' animal.ultima_inseminacao_id %}?next=overview" class="text-danger fw-bold text-decoration-none">
+                    {{ animal.prenhez_verificacao|date:"d/m/Y" }}
+                  </a>
+                {% elif animal.prenhez_verificacao <= today_plus_10 %}
+                  <a href="{% url 'insemination_check' animal.ultima_inseminacao_id %}?next=overview" class="text-warning fw-bold text-decoration-none">
+                    {{ animal.prenhez_verificacao|date:"d/m/Y" }}
+                  </a>
+                {% else %}
+                  {{ animal.prenhez_verificacao|date:"d/m/Y" }}
+                {% endif %}
+              {% else %}
+                {{ animal.prenhez_verificacao|date:"d/m/Y" }}
+              {% endif %}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>{{ animal.prenhez_verificada|date:"d/m/Y" }}</td>
+          <td>
+            {% if animal.esta_prenha == "S" %}
+              <span class="badge bg-success">Sim</span>
+            {% elif animal.esta_prenha == "N" %}
+              <span class="badge bg-danger">Não</span>
+            {% else %}
+              <span class="badge bg-secondary">-</span>
+            {% endif %}
+          </td>
+          <td>{{ animal.parto_previsto|date:"d/m/Y" }}</td>
+          <td>{{ animal.secagem_prevista|date:"d/m/Y" }}</td>
+          <td>{{ animal.secagem|date:"d/m/Y" }}</td>
+          <td>{{ animal.parto|date:"d/m/Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="9" class="text-center">Nenhum animal encontrado</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginação -->
+  {% if is_paginated %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page=1&farm={{ request.GET.farm }}&name={{ request.GET.name }}">&laquo;</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&farm={{ request.GET.farm }}&name={{ request.GET.name }}">Anterior</a>
+          </li>
+        {% endif %}
+        <li class="page-item disabled"><a class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a></li>
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}&farm={{ request.GET.farm }}&name={{ request.GET.name }}">Próxima</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&farm={{ request.GET.farm }}&name={{ request.GET.name }}">&raquo;</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+
+</div>
+{% endblock %}

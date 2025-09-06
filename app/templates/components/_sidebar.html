@@ -7,6 +7,14 @@
       </button>
       <div class="collapse d-sm-block" id="menuCollapse">
         <ul class="nav flex-column align-items-start" id="menu">
+          {% if perms.animals.view_animal %}
+            <li>
+              <a href="{% url "animal_overview" %}" class="nav-link px-0 align-middle">
+                <i class="bi bi-eye"></i>
+                <span class="ms-1">Visão Geral</span>
+              </a>
+            </li>
+          {% endif %}
           {% if perms.companies.view_company %}
             <li>
               <a href="{% url "company_list" %}" class="nav-link px-0 align-middle">

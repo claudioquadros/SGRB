@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # noqa
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView  # noqa
 from . import models, forms
 
@@ -51,6 +51,12 @@ class InseminationCheckView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
     form_class = forms.InseminationCheckForm
     success_url = reverse_lazy('insemination_list')
     permission_required = 'inseminations.change_insemination'
+
+    def get_success_url(self):
+        next_page = self.request.GET.get("next")
+        if next_page == "overview":
+            return str(reverse("animal_overview"))
+        return str(reverse("insemination_list"))
 
 
 class InseminationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):  # noqa
