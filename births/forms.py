@@ -30,18 +30,18 @@ class BirthUpdateForm(forms.ModelForm):
     date_of_insemination = forms.DateField(
         label="Data da Inseminação",
         required=False,
-        widget=forms.DateInput(attrs={'class': 'form-control', 'disabled': 'disabled', 'type': 'date'})  # noqa
+        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'readonly': 'readonly'})  # noqa
     )
 
     class Meta:
         model = models.Birth
         fields = ['animal', 'date_of_insemination', 'expected_birth', 'expected_dry', 'dry', 'birth']  # noqa
         widgets = {
-            'animal': forms.Select(attrs={'class': 'form-control', 'disabled': 'disabled'}),  # noqa
-            'expected_birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),  # noqa
-            'expected_dry': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),  # noqa
-            'dry': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),  # noqa
-            'birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),  # noqa
+            'animal': forms.Select(attrs={'class': 'form-control', 'readonly': 'readonly'}),  # noqa
+            'expected_birth': forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'}),  # noqa
+            'expected_dry': forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'}),  # noqa
+            'dry': forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'}),  # noqa
+            'birth': forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'}),  # noqa
         }
         labels = {
             'animal': 'Animal',
@@ -54,13 +54,19 @@ class BirthUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        # Preenche automaticamente o campo extra com a data da inseminação
         if self.instance and self.instance.insemination:
-            self.fields['date_of_insemination'].initial = self.instance.insemination.date_of_insemination  # noqa
-
-        # animal só para visualização
+            self.fields['date_of_insemination'].initial = (
+                self.instance.insemination.date_of_insemination.strftime('%Y-%m-%d')  # noqa
+            )
         self.fields['animal'].required = False
+
+        for field in ['expected_birth', 'expected_dry', 'dry', 'birth']:
+            value = getattr(self.instance, field)
+            if value:
+                # se for datetime, pega só a data
+                if hasattr(value, 'date'):
+                    value = value.date()
+                self.fields[field].initial = value
 
 
 class BirthCheckDryUpdateForm(forms.ModelForm):

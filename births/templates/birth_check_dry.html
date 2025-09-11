@@ -15,12 +15,18 @@
         {% if object.birth %} {{ object.birth|date:"d/m/Y" }} {% else %} <em>Não lançado</em> {% endif %}
     </p>
   </div>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
 
+  <div class="d-flex gap-2 mt-3">
     <button type="submit" class="btn btn-primary">Salvar</button>
-    <a href="{% url 'birth_list' %}" class="btn btn-secondary">Cancelar</a>
-  </form>
-</div>
+    <a href="{% if request.GET.next == 'overview' %}
+                {% url 'animal_overview' %}
+              {% else %}
+                {% url 'birth_list' %}
+              {% endif %}"
+       class="btn btn-secondary">Cancelar e Voltar</a>
+  </div>
+</form>
 {% endblock %}

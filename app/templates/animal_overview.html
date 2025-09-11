@@ -5,11 +5,9 @@
 <div class="container mt-4">
   <h3 class="mb-4">Visão Geral dos Animais</h3>
 
-  <!-- Filtros -->
   <form method="get" action="">
     <div class="row g-2 align-items-end mb-3">
 
-      <!-- filtro por propriedade -->
       <div class="col-md-4">
         <label for="farm" class="form-label">Propriedade</label>
         <select name="farm" id="farm" class="form-select" onchange="this.form.submit()">
@@ -22,7 +20,6 @@
         </select>
       </div>
 
-      <!-- filtro por nome -->
       <div class="col-md-4">
         <label for="name" class="form-label">Nome</label>
         <div class="input-group">
@@ -38,13 +35,13 @@
     </div>
   </form>
 
-  <!-- Tabela -->
   <div class="table-responsive">
     <table class="table table-bordered table-hover align-middle">
       <thead class="table-dark">
         <tr>
           <th>Nome</th>
           <th>Nascimento</th>
+          <th>Categoria</th>
           <th>Última Inseminação</th>
           <th>Verificar Prenhez</th>
           <th>Verificada Prenhez</th>
@@ -60,6 +57,7 @@
         <tr>
           <td>{{ animal.name }}</td>
           <td>{{ animal.birth|date:"d/m/Y" }}</td>
+          <td>{{ animal.category.name }}</td>
           <td>{{ animal.ultima_inseminacao|date:"d/m/Y" }}</td>
           <td>
             {% if animal.prenhez_verificacao %}
@@ -92,8 +90,51 @@
               <span class="badge bg-secondary">-</span>
             {% endif %}
           </td>
-          <td>{{ animal.parto_previsto|date:"d/m/Y" }}</td>
-          <td>{{ animal.secagem_prevista|date:"d/m/Y" }}</td>
+
+          <td>
+            {# PREVISÃO PARTO #}
+            {% if animal.parto %}
+              {{ animal.parto|date:"d/m/Y" }}
+            {% elif animal.parto_previsto %}
+              {% if animal.parto_previsto <= today %}
+                <a href="{% url 'birth_check_birth' animal.birth_id %}?next=overview"
+                  class="fw-bold text-danger text-decoration-none">
+                  {{ animal.parto_previsto|date:"d/m/Y" }}
+                </a>
+              {% elif animal.parto_previsto <= today_plus_10 %}
+                <a href="{% url 'birth_check_birth' animal.birth_id %}?next=overview"
+                  class="fw-bold text-warning text-decoration-none">
+                  {{ animal.parto_previsto|date:"d/m/Y" }}
+                </a>
+              {% else %}
+                <span>{{ animal.parto_previsto|date:"d/m/Y" }}</span>
+              {% endif %}
+            {% else %}
+              <em>Sem previsão</em>
+            {% endif %}
+          </td>
+
+          <td>
+            {# SECAGEM PREVISTA #}
+            {% if animal.secagem_prevista and not animal.secagem %}
+              {% if animal.secagem_prevista <= today %}
+                <a href="{% url 'birth_check_dry' animal.birth_id %}?next=overview"
+                  class="fw-bold text-danger text-decoration-none">
+                  {{ animal.secagem_prevista|date:"d/m/Y" }}
+                </a>
+              {% elif animal.secagem_prevista <= today_plus_10 %}
+                <a href="{% url 'birth_check_dry' animal.birth_id %}?next=overview"
+                  class="fw-bold text-warning text-decoration-none">
+                  {{ animal.secagem_prevista|date:"d/m/Y" }}
+                </a>
+              {% else %}
+                <span>{{ animal.secagem_prevista|date:"d/m/Y" }}</span>
+              {% endif %}
+            {% else %}
+              {{ animal.secagem_prevista|date:"d/m/Y" }}
+            {% endif %}
+          </td>
+          
           <td>{{ animal.secagem|date:"d/m/Y" }}</td>
           <td>{{ animal.parto|date:"d/m/Y" }}</td>
         </tr>
@@ -106,7 +147,6 @@
     </table>
   </div>
 
-  <!-- Paginação -->
   {% if is_paginated %}
     <nav aria-label="Page navigation">
       <ul class="pagination justify-content-center">
