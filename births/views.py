@@ -72,8 +72,10 @@ class CheckDryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
 
     def get_success_url(self):
         messages.success(self.request, "Data de secagem registrada com sucesso!")  # noqa
-        return reverse_lazy('birth_list')
-
+        next_page = self.request.GET.get("next")
+        if next_page == "overview":
+            return str(reverse_lazy("animal_overview"))
+        return str(reverse_lazy("birth_list"))
 
 class CheckBirthUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView): # noqa
     model = models.Birth
@@ -85,7 +87,10 @@ class CheckBirthUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVi
         return models.Birth.objects.filter(birth__isnull=True)
 
     def get_success_url(self):
-        return reverse_lazy("birth_list")
+        next_page = self.request.GET.get("next")
+        if next_page == "overview":
+            return str(reverse_lazy("animal_overview"))
+        return str(reverse_lazy("birth_list"))
 
 
 class BirthDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView): # noqa
