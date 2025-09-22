@@ -78,10 +78,17 @@ class InseminationCheckForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'type': 'date',
-                    'style': 'max-width: 200px;'
+                    'style': 'max-width: 200px;',
+                    'required': 'required'
                 }
             ),
-            'is_pregnant': forms.Select(attrs={'class': 'form-select', 'style':'max-width: 200px;'}) # noqa
+            'is_pregnant': forms.Select(
+                attrs={
+                    'class': 'form-select',
+                    'style': 'max-width: 200px;',
+                    'required': 'required'
+                }
+            )
         }
         labels = {
             'pregnancy_check': 'Data da Verificação da Prenhez',

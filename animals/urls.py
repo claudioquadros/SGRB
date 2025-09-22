@@ -9,4 +9,5 @@ urlpatterns = [
     path('animals/<int:pk>/update/', views.AnimalUpdateView.as_view(), name='animal_update'),  # noqa
     path('animals/<int:pk>/culling/', views.AnimalCullingView.as_view(), name='animal_culling'),  # noqa
     path('animals/<int:pk>/delete/', views.AnimalDeleteView.as_view(), name='animal_delete'),  # noqa
+    path('animals/<int:pk>/category/', views.AnimalCategoryView.as_view(), name='animal_category'),  # noqa
 ]

@@ -24,8 +24,8 @@
                 {% for animal in form.fields.animal.queryset %}
                   <option value="{{ animal.id }}"
                           data-category="{{ animal.category.name }}"
-                          {% if form.initial.animal == animal.id %}selected{% endif %}>
-                    {{ animal.name }}
+                          {% if form.fields.animal.initial|stringformat:"s" == animal.id|stringformat:"s" %}selected{% endif %}>
+                      {{ animal.name }}
                   </option>
                 {% endfor %}
               </select>
@@ -53,8 +53,13 @@
       </div>
     </div>
 
-    <a href="{% url 'insemination_list' %}" class="btn btn-secondary mt-3">
-      Cancelar e Voltar para a Lista de Inseminação
+    <a href="{% if request.GET.next == 'overview' %}
+                {% url 'animal_overview' %}
+            {% else %}
+                {% url 'insemination_list' %}
+            {% endif %}"
+      class="btn btn-secondary mt-3">
+      Cancelar e Voltar
     </a>
   </div>
 

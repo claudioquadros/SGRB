@@ -61,3 +61,15 @@ class AnimalCullingForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if not self.instance.culling_date:
             self.initial['culling_date'] = now().date()
+
+
+class AnimalCategoryForm(forms.ModelForm):
+    class Meta:
+        model = models.Animal
+        fields = ['category']
+        widgets = {
+            'category': forms.Select(attrs={'class': 'form-select'})
+        }
+        labels = {
+            'category': 'Categoria'
+        }

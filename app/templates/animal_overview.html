@@ -55,7 +55,17 @@
       <tbody>
         {% for animal in animals %}
         <tr>
-          <td>{{ animal.name }}</td>
+          <td>
+            {% if animal.pode_inseminar %}
+              <a href="{% url 'insemination_create' %}?animal={{ animal.id }}&next=overview"
+                class="fw-bold text-warning text-decoration-none"
+                title="Animal apto à inseminação">
+                {{ animal.name }}
+              </a>
+            {% else %}
+              {{ animal.name }}
+            {% endif %}
+          </td>
           <td>{{ animal.birth|date:"d/m/Y" }}</td>
           <td>{{ animal.category.name }}</td>
           <td>{{ animal.ultima_inseminacao|date:"d/m/Y" }}</td>

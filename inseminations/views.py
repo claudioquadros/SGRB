@@ -38,6 +38,22 @@ class InseminationCreateView(LoginRequiredMixin, PermissionRequiredMixin, Create
     success_url = reverse_lazy('insemination_list')
     permission_required = 'inseminations.add_insemination'
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        animal_id = self.request.GET.get("animal")
+        if animal_id and 'animal' in form.fields:
+            try:
+                # garante que seja int (pk)
+                form.fields['animal'].initial = int(animal_id)
+            except (ValueError, TypeError):
+                pass
+        return form
+
+    def get_success_url(self):
+        next_page = self.request.GET.get("next")
+        if next_page == "overview":
+            return str(reverse("animal_overview"))
+        return str(reverse("insemination_list"))
 
 class InseminationDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):  # noqa
     model = models.Insemination

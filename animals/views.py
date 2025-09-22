@@ -51,6 +51,12 @@ class AnimalUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     success_url = reverse_lazy('animal_list')
     permission_required = 'animals.change_animal'
 
+class AnimalCategoryView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):  # noqa
+    model = models.Animal
+    template_name = 'animal_category.html'
+    form_class = forms.AnimalCategoryForm
+    success_url = reverse_lazy('animal_overview')
+    permission_required = 'animals.change_animal'
 
 class AnimalCullingView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView): # noqa
     model = models.Animal

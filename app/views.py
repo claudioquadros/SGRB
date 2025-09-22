@@ -1,5 +1,5 @@
 from django.views.generic import ListView
-from django.db.models import Subquery, OuterRef, Case, When, IntegerField, Value, Q  # noqa
+from django.db.models import Subquery, OuterRef, Case, When, IntegerField, Value, Q, BooleanField  # noqa
 from django.utils.timezone import now
 from datetime import timedelta
 from animals.models import Animal
@@ -71,6 +71,24 @@ class AnimalOverviewListView(ListView):
                 ),
                 default=Value(2),
                 output_field=IntegerField()
+            )
+        )
+
+        today_minus_40 = today - timedelta(days=40)
+
+        queryset = queryset.annotate(
+            pode_inseminar=Case(
+                When(
+                    ultima_inseminacao_id__isnull=True,
+                    then=Value(True)
+                ),
+                When(
+                    Q(parto__lte=today_minus_40) &
+                    (Q(prenhez_verificada__isnull=False)),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField()
             )
         )
 
