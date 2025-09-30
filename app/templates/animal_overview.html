@@ -67,7 +67,17 @@
             {% endif %}
           </td>
           <td>{{ animal.birth|date:"d/m/Y" }}</td>
-          <td>{{ animal.category.name }}</td>
+          <td>
+            {% if animal.category.name|lower == "novilha" %}
+              <a href="{% url 'animal_category' animal.id %}" 
+                class="fw-bold text-success text-decoration-none" 
+                title="Alterar categoria">
+                {{ animal.category.name }}
+              </a>
+            {% else %}
+              {{ animal.category.name }}
+            {% endif %}
+          </td>
           <td>{{ animal.ultima_inseminacao|date:"d/m/Y" }}</td>
           <td>
             {% if animal.prenhez_verificacao %}
@@ -119,8 +129,6 @@
               {% else %}
                 <span>{{ animal.parto_previsto|date:"d/m/Y" }}</span>
               {% endif %}
-            {% else %}
-              <em>Sem previsão</em>
             {% endif %}
           </td>
 

@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # noqa
 from django.views.generic import ListView
 from django.db.models import Subquery, OuterRef, Case, When, IntegerField, Value, Q, BooleanField  # noqa
 from django.utils.timezone import now
@@ -8,11 +9,12 @@ from births.models import Birth
 from farms.models import Farm
 
 
-class AnimalOverviewListView(ListView):
+class AnimalOverviewListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):  # noqa
     model = Animal
     template_name = "animal_overview.html"
     context_object_name = "animals"
     paginate_by = 10
+    permission_required = 'animals.view_animal'
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -43,38 +45,9 @@ class AnimalOverviewListView(ListView):
             birth_id=Subquery(last_birth.values('id')[:1]),
         )
 
-        # prioridade color (0 = vermelho, 1 = amarelo, 2 = normal)
         today = now().date()
-        today_plus_10 = today + timedelta(days=10)
-
-        queryset = queryset.annotate(
-            prioridade=Case(
-                # vermelho: alguma previsão <= hoje, e ainda NÃO houve o lançamento/checagem correspondente  # noqa
-                When(
-                    Q(prenhez_verificacao__lte=today) & Q(prenhez_verificada__isnull=True)  # noqa
-                    |
-                    Q(parto_previsto__lte=today) & Q(parto__isnull=True)
-                    |
-                    Q(secagem_prevista__lte=today) & Q(secagem__isnull=True),
-                    then=Value(0)
-                ),
-                # amarelo: previsão entre (hoje, hoje+10] e ainda não realizada
-                When(
-                    (
-                        (Q(prenhez_verificacao__gt=today) & Q(prenhez_verificacao__lte=today_plus_10) & Q(prenhez_verificada__isnull=True))  # noqa
-                        |
-                        (Q(parto_previsto__gt=today) & Q(parto_previsto__lte=today_plus_10) & Q(parto__isnull=True))  # noqa
-                        |
-                        (Q(secagem_prevista__gt=today) & Q(secagem_prevista__lte=today_plus_10) & Q(secagem__isnull=True))  # noqa
-                    ),
-                    then=Value(1)
-                ),
-                default=Value(2),
-                output_field=IntegerField()
-            )
-        )
-
         today_minus_40 = today - timedelta(days=40)
+        today_minus_18 = today - timedelta(days=18)
 
         queryset = queryset.annotate(
             pode_inseminar=Case(
@@ -87,8 +60,54 @@ class AnimalOverviewListView(ListView):
                     (Q(prenhez_verificada__isnull=False)),
                     then=Value(True)
                 ),
+                # 3ª regra: inseminada mas falhou ou não checada após 18 dias
+                When(
+                    Q(ultima_inseminacao__lte=today_minus_18) &  # noqa
+                    (
+                        Q(esta_prenha='N') |
+                        Q(ultima_inseminacao__isnull=True)
+                    ),
+                    then=Value(True)
+                ),
                 default=Value(False),
                 output_field=BooleanField()
+            )
+        )
+
+        # prioridade color (0 = vermelho, 1 = amarelo, 2 = normal)
+
+        today_plus_10 = today + timedelta(days=10)
+
+        queryset = queryset.annotate(
+            prioridade=Case(
+                # 0: previsões vencidas
+                When(
+                    Q(prenhez_verificacao__lte=today) & Q(prenhez_verificada__isnull=True)  # noqa
+                    |
+                    Q(parto_previsto__lte=today) & Q(parto__isnull=True)
+                    |
+                    Q(secagem_prevista__lte=today) & Q(secagem__isnull=True),
+                    then=Value(0)
+                ),
+                # 1: apto a inseminação (pode_inseminar=True)
+                When(
+                    Q(pode_inseminar=True),
+                    then=Value(1)
+                ),
+                # 1 (amarelo): previsão nos próximos 10 dias
+                When(
+                    (
+                        (Q(prenhez_verificacao__gt=today) & Q(prenhez_verificacao__lte=today_plus_10) & Q(prenhez_verificada__isnull=True)) # noqa
+                        |
+                        (Q(parto_previsto__gt=today) & Q(parto_previsto__lte=today_plus_10) & Q(parto__isnull=True))  # noqa
+                        |
+                        (Q(secagem_prevista__gt=today) & Q(secagem_prevista__lte=today_plus_10) & Q(secagem__isnull=True))  # noqa
+                    ),
+                    then=Value(1)
+                ),
+                # 2: normal
+                default=Value(2),
+                output_field=IntegerField()
             )
         )
 
