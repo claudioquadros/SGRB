@@ -1,3 +1,6 @@
+from django.contrib import messages
+from django.db.models.deletion import ProtectedError
+from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # noqa
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView  # noqa
@@ -48,3 +51,16 @@ class BreedDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView): 
     template_name = 'breed_delete.html'
     success_url = reverse_lazy('breed_list')
     permission_required = 'breeds.delete_breed'
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        try:
+            self.object.delete()
+            return redirect(self.success_url)
+        except ProtectedError:
+            messages.error(
+                request,
+                "❌ Esta raça não pode ser excluída porque há animais vinculados a ela."  # noqa
+            )
+            context = self.get_context_data(object=self.object)
+            return self.render_to_response(context)

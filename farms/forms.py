@@ -13,5 +13,5 @@ class FarmForm(forms.ModelForm):
         }
         labels = {
             'company': 'Companhia',
-            'name': 'Nome',
+            'name': 'Nome da Propriedade',
         }

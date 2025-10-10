@@ -93,7 +93,11 @@
               {% endif %}
 
               {% if perms.animals.change_animal %}
-                <a href="{% url "animal_culling" animal.id %}" class="btn btn-danger btn-sm">
+                <a href="{% url "animal_culling" animal.id %}" 
+                  class="btn btn-danger btn-sm"
+                  data-bs-toggle="tooltip" 
+                  data-bs-placement="top" 
+                  title="Dar baixa no animal">
                   <i class="bi bi-exclamation-triangle text-warning"></i>
                 </a>
               {% endif %}

@@ -4,7 +4,7 @@ from companies.models import Company
 
 class Farm(models.Model):
     name = models.CharField(max_length=100)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="farms")  # noqa
+    company = models.ForeignKey(Company, on_delete=models.PROTECT, related_name="farms")  # noqa
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

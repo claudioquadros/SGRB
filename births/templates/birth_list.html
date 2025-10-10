@@ -84,12 +84,20 @@
 
               {% if  perms.births.change_birth %}
                 {% if birth.expected_dry %}
-                  <a href="{% url "birth_check_dry" birth.id %}" class="btn btn-warning btn-sm">
+                  <a href="{% url "birth_check_dry" birth.id %}" 
+                    class="btn btn-warning btn-sm"
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="top" 
+                    title="Lançar secagem">
                     <i class="bi bi-droplet-half"></i>
                   </a>
                 {% endif %}
                 {% if birth.expected_birth %}
-                  <a href="{% url "birth_check_birth" birth.id %}" class="btn btn-warning btn-sm">
+                  <a href="{% url "birth_check_birth" birth.id %}"
+                    class="btn btn-warning btn-sm"
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="top" 
+                    title="Lançar Nascimento">
                   <i class="bi-star-fill"></i>
                   </a>
                 {% endif %}
