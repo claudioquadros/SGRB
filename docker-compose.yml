@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   sgrb_db:
     image: postgres:16
