@@ -1,25 +1,39 @@
-services:
-    
-    sgrb_web:
-        build: .
-        env_file:
-            - .env
-        restart: always
-        ports:
-            - 8000:8000
-        depends_on:
-            - sgrb_db
+version: "3.9"
 
-    sgrb_db:
-        image: postgres:15
-        ports:
-            - 5432:5432
-        volumes:
-            - postgres_data:/var/lib/postgresql/data/
-        environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-            - POSTGRES_DB=sgrb
+services:
+  sgrb_db:
+    image: postgres:16
+    container_name: sgrb_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sgrb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  sgrb_web:
+    build: .
+    container_name: sgrb_web
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      sgrb_db:
+        condition: service_healthy
+    volumes:
+      - .:/sgrb  # monta o código local no container para dev
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
 
 volumes:
-    postgres_data:
+  postgres_data:
