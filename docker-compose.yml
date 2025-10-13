@@ -2,6 +2,7 @@ services:
   sgrb_db:
     image: postgres:16
     container_name: sgrb_db
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -19,9 +20,9 @@ services:
   sgrb_web:
     build: .
     container_name: sgrb_web
+    restart: always
     env_file:
       - .env
-    restart: always
     ports:
       - "8000:8000"
     depends_on:
