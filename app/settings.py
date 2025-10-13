@@ -33,6 +33,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.1.12', 'localhost', '127.0.0.1', 'sgrb.aqsystems.site']  # noqa
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://sgrb.aqsystems.site",
+    "http://192.168.1.12",
+]
 
 # Application definition
 
