@@ -11,6 +11,7 @@ PRENHEZ_CHOICES = [
 class Insemination(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.PROTECT, related_name='inseminations')  # noqa
     date_of_insemination = models.DateField()
+    bull = models.CharField(max_length=100, null=True, blank=True)
     expected_pregnancy = models.DateField(null=True, blank=True)
     pregnancy_check = models.DateField(null=True, blank=True)
     is_pregnant = models.CharField(

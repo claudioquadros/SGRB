@@ -32,7 +32,7 @@
           Limpar
         </a>
         {% if perms.inseminations.add_insemination %}
-          <a href="{% url 'insemination_create' %}" class="btn btn-success">
+          <a href="{% url 'insemination_create' %}?{{ request.GET.urlencode }}" class="btn btn-success">
             <i class="bi bi-plus"></i> Nova Inseminação
           </a>
         {% endif %}
@@ -48,6 +48,7 @@
               <tr>
                 <th>Animal</th>
                 <th>Data da Inseminação</th>
+                <th>Touro</th>
                 <th>Verificar a Prenhez</th>
                 <th>Verificado</th>
                 <th>Está Prenha?</th>
@@ -59,6 +60,13 @@
                 <tr>
                   <td>{{ insemination.animal.name }}</td>
                   <td>{{ insemination.date_of_insemination|date:'d/m/Y' }}</td>
+                  <td>
+                    {% if insemination.bull %}
+                      {{ insemination.bull }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
                   <td>
                     {% if insemination.expected_pregnancy %}
                       {{ insemination.expected_pregnancy|date:'d/m/Y' }}
@@ -82,18 +90,18 @@
                   </td>
                   <td>
                     {% if perms.inseminations.view_insemination %}
-                      <a href="{% url 'insemination_detail' insemination.id %}" class="btn btn-info btn-sm">
+                      <a href="{% url 'insemination_detail' insemination.id %}?{{ request.GET.urlencode }}" class="btn btn-info btn-sm">
                         <i class="bi bi-eye"></i>
                       </a>
                     {% endif %}
                     {% if perms.inseminations.change_insemination %}
-                      <a href="{% url 'insemination_check' insemination.id %}" class="btn btn-warning btn-sm">
+                      <a href="{% url 'insemination_check' insemination.id %}?{{ request.GET.urlencode }}" class="btn btn-warning btn-sm">
                         <i class="bi bi-check-lg"></i>
                       </a>
                     {% endif %}
                     {% if perms.inseminations.delete_insemination %}
                       {% if insemination.is_pregnant is None %}
-                        <a href="{% url 'insemination_delete' insemination.id %}" class="btn btn-danger btn-sm">
+                        <a href="{% url 'insemination_delete' insemination.id %}?{{ request.GET.urlencode }}" class="btn btn-danger btn-sm">
                           <i class="bi bi-trash"></i>
                         </a>
                       {% endif %}

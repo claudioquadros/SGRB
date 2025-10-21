@@ -13,6 +13,12 @@
         </form>
       </div>
     </div>
-    <a href="{% url 'animal_list' %}" class="btn btn-secondary mt-3"> Cancelar e Voltar para a Lista de Animais</a>
+    {% with request.GET.next as next_view %}
+      {% with request.GET.urlencode as filters %}
+        <a href="{% url next_view|default:'animal_list' %}?{{ filters }}" class="btn btn-secondary mt-3">
+          Cancelar e Voltar para a Lista de Animais
+        </a>
+      {% endwith %}
+    {% endwith %}
   </div>
 {% endblock %}

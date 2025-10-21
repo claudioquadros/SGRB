@@ -22,7 +22,13 @@
           </div>
         </div>
         <button type="submit" class="btn btn-primary">Salvar</button>
-        <a href="{% url 'animal_overview' %}" class="btn btn-secondary ms-2">Cancelar</a>
+        {% with request.GET.next as next_view %}
+          {% with request.GET.urlencode as filters %}
+            <a href="{% url next_view|default:'animal_list' %}?{{ filters }}" class="btn btn-secondary mt-3">
+              Cancelar e Voltar para a Lista de Animais
+            </a>
+          {% endwith %}
+        {% endwith %}
       </form>
     </div>
   </div>

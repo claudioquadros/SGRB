@@ -18,6 +18,10 @@
         <form method="post">
           {% csrf_token %}
           <div class="row mb-3">
+              <div class="col-md-6">
+              {{ form.bull.label_tag }}
+              {{ form.bull }}
+            </div>
             <div class="col-md-6">
               {{ form.pregnancy_check.label_tag }}
               {{ form.pregnancy_check }}
@@ -32,13 +36,18 @@
       </div>
     </div>
 
-    <a href="{% if request.GET.next == 'overview' %}
-                {% url 'animal_overview' %}
-            {% else %}
-                {% url 'insemination_list' %}
-            {% endif %}"
-      class="btn btn-secondary mt-3">
-      Cancelar e Voltar
-    </a>
+    {% with request.GET.next as next_view %}
+      {% with request.GET.urlencode as filters %}
+        {% if next_view == 'overview' %}
+          <a href="{% url 'animal_overview' %}?{{ filters }}" class="btn btn-secondary mt-3">
+            Cancelar e Voltar
+          </a>
+        {% else %}
+          <a href="{% url 'insemination_list' %}?{{ filters }}" class="btn btn-secondary mt-3">
+            Cancelar e Voltar
+          </a>
+        {% endif %}
+      {% endwith %}
+    {% endwith %}
   </div>
 {% endblock %}

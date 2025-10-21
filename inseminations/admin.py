@@ -7,6 +7,7 @@ class InseminationAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'animal',
+        'bull',
         'date_of_insemination',
         'expected_pregnancy',
         'pregnancy_check',
@@ -17,6 +18,7 @@ class InseminationAdmin(admin.ModelAdmin):
         'animal__farm__company',
         'animal__breed',
         'animal__category',
+        'bull',
         'is_pregnant',
         'date_of_insemination',
         'expected_pregnancy',

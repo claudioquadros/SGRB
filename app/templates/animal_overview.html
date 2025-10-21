@@ -42,7 +42,8 @@
           <th>Nome</th>
           <th>Nascimento</th>
           <th>Categoria</th>
-          <th>Última Inseminação</th>
+          <th>Última IA</th>
+          <th>Touro</th>
           <th>Verificar Prenhez</th>
           <th>Verificada Prenhez</th>
           <th>Está Prenha?</th>
@@ -79,6 +80,12 @@
             {% endif %}
           </td>
           <td>{{ animal.ultima_inseminacao|date:"d/m/Y" }}</td>
+          <td> {% if animal.touro %}
+                 {{ animal.touro }}
+               {% else %}
+                  -
+               {% endif %}
+           </td>
           <td>
             {% if animal.prenhez_verificacao %}
               {% if not animal.prenhez_verificada %}

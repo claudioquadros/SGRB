@@ -37,7 +37,7 @@
           Limpar
         </a>
         {% if perms.animals.add_animal %}
-          <a href="{% url 'animal_create' %}" class="btn btn-success">
+          <a href="{% url 'animal_create' %}?{{ request.GET.urlencode }}" class="btn btn-success">
             <i class="bi bi-plus"></i> Novo Animal
           </a>
         {% endif %}
@@ -75,25 +75,25 @@
             </td>
             <td>
               {% if perms.animals.view_animal %}
-                <a href="{% url "animal_detail" animal.id %}" class="btn btn-info btn-sm">
+                <a href="{% url "animal_detail" animal.id %}?{{ request.GET.urlencode }}" class="btn btn-info btn-sm">
                   <i class="bi bi-eye"></i>
                 </a>
               {% endif %}
 
               {% if perms.animals.change_animal %}
-              <a href="{% url "animal_update" animal.id %}" class="btn btn-warning btn-sm">
+              <a href="{% url "animal_update" animal.id %}?{{ request.GET.urlencode }}" class="btn btn-warning btn-sm">
                 <i class="bi bi-pencil"></i>
               </a>
               {% endif %}
 
               {% if perms.animals.delete_animal %}
-                <a href="{% url "animal_delete" animal.id %}" class="btn btn-danger btn-sm">
+                <a href="{% url "animal_delete" animal.id %}?{{ request.GET.urlencode }}" class="btn btn-danger btn-sm">
                   <i class="bi bi-trash"></i>
                 </a>
               {% endif %}
 
               {% if perms.animals.change_animal %}
-                <a href="{% url "animal_culling" animal.id %}" 
+                <a href="{% url "animal_culling" animal.id %}?{{ request.GET.urlencode }}" 
                   class="btn btn-danger btn-sm"
                   data-bs-toggle="tooltip" 
                   data-bs-placement="top" 

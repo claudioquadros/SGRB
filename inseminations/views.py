@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # noqa
 from django.shortcuts import redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView  # noqa
 from . import models, forms
+from app.mixins import NextRedirectMixin
 
 
 class InseminationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):  # noqa
@@ -31,11 +32,11 @@ class InseminationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView
         context["farms"] = Farm.objects.all()
         return context
 
-class InseminationCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):  # noqa
+class InseminationCreateView(LoginRequiredMixin, PermissionRequiredMixin, NextRedirectMixin, CreateView):  # noqa
     model = models.Insemination
     template_name = "Insemination_create.html"
     form_class = forms.InseminationRegisterForm
-    success_url = reverse_lazy('insemination_list')
+    success_url = 'insemination_list'
     permission_required = 'inseminations.add_insemination'
 
     def get_form(self, form_class=None):
@@ -55,17 +56,16 @@ class InseminationCreateView(LoginRequiredMixin, PermissionRequiredMixin, Create
             return str(reverse("animal_overview"))
         return str(reverse("insemination_list"))
 
-class InseminationDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):  # noqa
+class InseminationDetailView(LoginRequiredMixin, PermissionRequiredMixin, NextRedirectMixin, DetailView):  # noqa
     model = models.Insemination
     template_name = 'insemination_detail.html'
     permission_required = 'inseminations.view_insemination'
 
-
-class InseminationCheckView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):  # noqa
+class InseminationCheckView(LoginRequiredMixin, PermissionRequiredMixin, NextRedirectMixin, UpdateView):  # noqa
     model = models.Insemination
     template_name = 'insemination_check.html'
     form_class = forms.InseminationCheckForm
-    success_url = reverse_lazy('insemination_list')
+    success_url = 'insemination_list'
     permission_required = 'inseminations.change_insemination'
 
     def get_success_url(self):
@@ -75,10 +75,10 @@ class InseminationCheckView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
         return str(reverse("insemination_list"))
 
 
-class InseminationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):  # noqa
+class InseminationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, NextRedirectMixin, DeleteView):  # noqa
     model = models.Insemination
     template_name = 'insemination_delete.html'
-    success_url = reverse_lazy('insemination_list')
+    success_url = 'insemination_list'
     permission_required = 'inseminations.delete_insemination'
 
     def delete(self, request, *args, **kwargs):

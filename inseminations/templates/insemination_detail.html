@@ -10,6 +10,16 @@
                     <th>Animal</th>
                     <td>{{ insemination.animal.name }}</td>
                 </tr>
+               <tr>
+                    <th>Touro</th>
+                    <td>
+                        {% if insemination.bull %}
+                            {{ insemination.bull }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
                 <tr>
                     <th>Data da Inseminação</th>
                     <td>{{ insemination.date_of_insemination|date:"d/m/Y" }}</td>
@@ -53,7 +63,19 @@
                     <td>{{ insemination.updated_at|date:"d/m/Y H:i" }}</td>
                 </tr>
             </table>
-            <a href="{% url 'insemination_list' %}" class="btn btn-secondary mt-3">Voltar</a>
+            {% with request.GET.next as next_view %}
+              {% with request.GET.urlencode as filters %}
+                {% if next_view == 'overview' %}
+                  <a href="{% url 'animal_overview' %}?{{ filters }}" class="btn btn-secondary mt-3">
+                    Cancelar e Voltar
+                  </a>
+                {% else %}
+                  <a href="{% url 'insemination_list' %}?{{ filters }}" class="btn btn-secondary mt-3">
+                    Cancelar e Voltar
+                  </a>
+                {% endif %}
+              {% endwith %}
+            {% endwith %}
         </div>
     </div>
 </div>

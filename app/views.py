@@ -28,6 +28,7 @@ class AnimalOverviewListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
         queryset = queryset.annotate(
             ultima_inseminacao_id=Subquery(last_insemination.values('id')[:1]),
             ultima_inseminacao=Subquery(last_insemination.values('date_of_insemination')[:1]),  # noqa
+            touro=Subquery(last_insemination.values('bull')[:1]),  # noqa
             prenhez_verificacao=Subquery(last_insemination.values('expected_pregnancy')[:1]),  # noqa
             prenhez_verificada=Subquery(last_insemination.values('pregnancy_check')[:1]),  # noqa
             esta_prenha=Subquery(last_insemination.values('is_pregnant')[:1]),

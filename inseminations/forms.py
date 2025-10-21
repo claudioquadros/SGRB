@@ -7,9 +7,10 @@ from django.utils.timezone import now
 class InseminationRegisterForm(forms.ModelForm):
     class Meta:
         model = Insemination
-        fields = ['animal', 'date_of_insemination', 'expected_pregnancy']
+        fields = ['animal', 'bull', 'date_of_insemination', 'expected_pregnancy']  # noqa
         widgets = {
             'animal': forms.Select(attrs={'class': 'form-control'}),
+            'bull': forms.TextInput(attrs={'class': 'form-control'}),
             'date_of_insemination': forms.DateInput(
                 attrs={
                     'class': 'form-control',
@@ -29,6 +30,7 @@ class InseminationRegisterForm(forms.ModelForm):
         }
         labels = {
             'animal': 'Animal',
+            'bull': 'Touro',
             'date_of_insemination': 'Data da Inseminação',
             'expected_pregnancy': 'Verificação da Prenhez',
         }
@@ -72,8 +74,9 @@ class InseminationRegisterForm(forms.ModelForm):
 class InseminationCheckForm(forms.ModelForm):
     class Meta:
         model = Insemination
-        fields = ['pregnancy_check', 'is_pregnant']
+        fields = ['bull', 'pregnancy_check', 'is_pregnant']
         widgets = {
+            'bull': forms.TextInput(attrs={'class': 'form-control'}),
             'pregnancy_check': forms.DateInput(
                 attrs={
                     'class': 'form-control',
@@ -91,6 +94,7 @@ class InseminationCheckForm(forms.ModelForm):
             )
         }
         labels = {
+            'bull': 'Touro',
             'pregnancy_check': 'Data da Verificação da Prenhez',
             'is_pregnant': 'Está Prenha?',
         }
