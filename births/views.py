@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView  # noqa
 from . import models, forms
+from app.mixins import NextRedirectMixin
 
 
 class BirthListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):  # noqa
@@ -33,11 +34,11 @@ class BirthListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):  # n
         return context
 
 
-class BirthCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):  # noqa
+class BirthCreateView(LoginRequiredMixin, PermissionRequiredMixin, NextRedirectMixin, CreateView):  # noqa
     model = models.Birth
     template_name = "birth_create.html"
     form_class = forms.BirthForm
-    success_url = reverse_lazy('birth_list')
+    success_url = 'birth_list'
     permission_required = 'births.add_birth'
 
 

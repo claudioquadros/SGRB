@@ -37,7 +37,7 @@
           Limpar
         </a>
         {% if perms.births.add_birth %}
-          <a href="{% url 'birth_create' %}" class="btn btn-success">
+          <a href="{% url 'birth_create' %}?{{ request.GET.urlencode }}" class="btn btn-success">
             <i class="bi bi-plus"></i> Novo Parto
           </a>
         {% endif %}

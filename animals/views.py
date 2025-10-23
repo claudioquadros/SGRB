@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin  # noqa
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView  # noqa
 from . import models, forms
@@ -74,7 +75,7 @@ class AnimalCullingView(LoginRequiredMixin, PermissionRequiredMixin, NextRedirec
 class AnimalDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView): # noqa
     model = models.Animal
     template_name = 'animal_delete.html'
-    success_url = 'animal_list'
+    success_url = reverse_lazy('animal_list')
     permission_required = 'animals.delete_animal'
 
     def post(self, request, *args, **kwargs):
