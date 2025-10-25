@@ -15,18 +15,24 @@
         {% if object.birth %} {{ object.birth|date:"d/m/Y" }} {% else %} <em>Não lançado</em> {% endif %}
     </p>
   </div>
-<form method="post">
+<form method="post" action="{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}">
   {% csrf_token %}
   {{ form.as_p }}
-
+  <button type="submit" class="btn btn-primary">Salvar</button>
   <div class="d-flex gap-2 mt-3">
-    <button type="submit" class="btn btn-primary">Salvar</button>
-    <a href="{% if request.GET.next == 'overview' %}
-                {% url 'animal_overview' %}
-              {% else %}
-                {% url 'birth_list' %}
-              {% endif %}"
-       class="btn btn-secondary">Cancelar e Voltar</a>
+    {% with request.GET.next as next_view %}
+      {% with request.GET.urlencode as filters %}
+        {% if next_view == 'overview' %}
+          <a href="{% url 'animal_overview' %}?{{ filters }}" class="btn btn-secondary mt-3">
+            Cancelar e Voltar
+          </a>
+        {% else %}
+          <a href="{% url 'birth_list' %}?{{ filters }}" class="btn btn-secondary mt-3">
+            Cancelar e Voltar
+          </a>
+        {% endif %}
+      {% endwith %}
+    {% endwith %}
   </div>
 </form>
 {% endblock %}

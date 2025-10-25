@@ -1,89 +1,96 @@
-<div class="row flex-nowrap">
-  <div class="col-auto col-md-0 col-xl-0 px-0 bg-dark">
-    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white">
-      <button class="btn btn-dark d-block d-sm-none mb-3" type="button" data-bs-toggle="collapse"
-        data-bs-target="#menuCollapse" aria-expanded="false" aria-controls="menuCollapse">
-        <i class="bi bi-list fs-4"></i>
-      </button>
-      <div class="collapse d-sm-block" id="menuCollapse">
-        <ul class="nav flex-column align-items-start" id="menu">
-          {% if perms.animals.view_animal %}
-            <li>
-              <a href="{% url "animal_overview" %}" class="nav-link px-0 align-middle">
-                <i class="bi bi-eye"></i>
-                <span class="ms-1">Visão Geral</span>
-              </a>
-            </li>
-          {% endif %}
-          {% if perms.companies.view_company %}
-            <li>
-              <a href="{% url "company_list" %}" class="nav-link px-0 align-middle">
-                <i class="bi bi-diagram-3 fs-4"></i>
-                <span class="ms-1">Companhia</span>
-              </a>
-            </li>
-          {% endif %}
-          {% if perms.farms.view_farm %}
-            <li>
-              <a href="{% url "farm_list" %}" class="nav-link px-0 align-middle">
-                <i class="bi bi-map fs-4"></i>
-                <span class="ms-1">Propriedades</span>
-              </a>
-            </li>
-          {% endif %}  
-          {% if perms.breeds.view_breed %}
-            <li>
-              <a href="{% url "breed_list" %}" class="nav-link px-0 align-middle">
-                <i class="bi bi-bar-chart fs-4"></i>
-                <span class="ms-1">Raça</span>
-              </a>
-            </li>
-          {% endif %}
-          {% if perms.categories.view_category %}
-            <li>
-              <a href="{% url "category_list" %}" class="nav-link px-0 align-middle">
-                <i class="bi bi-tags fs-4"></i>
-                <span class="ms-1">Categorias</span>
-              </a>
-            </li>
-          {% endif %}
-          {% if perms.animals.view_animal %}
-            <li>
-              <a href="{% url "animal_list" %}" class="nav-link px-0 align-middle">
-                <i class="bi bi-box fs-4"></i>
-                <span class="ms-1">Animais</span>
-              </a>
-            </li>
-          {% endif %}
-          {% if perms.inseminations.view_insemination %}
-            <li>
-              <a href="{% url "insemination_list" %}" class="nav-link px-0 align-middle">
-                <i class="bi bi-droplet fs-4"></i>
-                <span class="ms-1">Inseminação</span>
-              </a>
-            </li>
-          {% endif %}
-          {% if perms.births.view_birth %}
-            <li>
-              <a href="{% url "birth_list" %}" class="nav-link px-0 align-middle">
-                <i class="bi bi-gift fs-4"></i>
-                <span class="ms-1">Partos</span>
-              </a>
-            </li>
-          {% endif %}
-          <li class="nav-item">
-            {% if user.is_authenticated %}
-              <form action="{% url 'logout' %}" method="post" id="logout-form" class="nav-link px-0 align-middle">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-link text-decoration-none text-reset nav-link px-0 align-middle">
-                  <i class="bi bi-box-arrow-right fs-4 align-middle"></i>
-                  <span class="ms-1 align-middle">Sair</span>
-                </button>
-              </form>
-            {% endif %}
+<div id="sidebar" class="col-auto px-0 bg-dark">
+  <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white" style="min-height: 100vh;">
+    <button class="btn btn-dark d-inline-block d-md-none mb-3" type="button" data-bs-toggle="collapse"
+      data-bs-target="#menuCollapse" aria-expanded="false" aria-controls="menuCollapse" aria-label="Menu">
+      <i class="bi bi-list fs-4"></i>
+    </button>
+    <div class="collapse d-md-block" id="menuCollapse">
+      <ul class="nav flex-column align-items-start" id="menu">
+        {% if perms.animals.view_animal %}
+          <li>
+            <a href="{% url "animal_overview" %}" class="nav-link px-0 align-middle" data-bs-toggle="tooltip" data-bs-placement="right" title="Visão Geral">
+              <i class="bi bi-eye"></i>
+              <span class="ms-1">Visão Geral</span>
+            </a>
           </li>
-        </ul>
-      </div>
-      <hr>
+        {% endif %}
+        {% if perms.companies.view_company %}
+          <li>
+            <a href="{% url "company_list" %}" class="nav-link px-0 align-middle" data-bs-toggle="tooltip" data-bs-placement="right" title="Companhia">
+              <i class="bi bi-diagram-3 fs-4"></i>
+              <span class="ms-1">Companhia</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if perms.farms.view_farm %}
+          <li>
+            <a href="{% url "farm_list" %}" class="nav-link px-0 align-middle" data-bs-toggle="tooltip" data-bs-placement="right" title="Propriedades">
+              <i class="bi bi-map fs-4"></i>
+              <span class="ms-1">Propriedades</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if perms.breeds.view_breed %}
+          <li>
+            <a href="{% url "breed_list" %}" class="nav-link px-0 align-middle" data-bs-toggle="tooltip" data-bs-placement="right" title="Raça">
+              <i class="bi bi-bar-chart fs-4"></i>
+              <span class="ms-1">Raça</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if perms.categories.view_category %}
+          <li>
+            <a href="{% url "category_list" %}" class="nav-link px-0 align-middle" data-bs-toggle="tooltip" data-bs-placement="right" title="Categorias">
+              <i class="bi bi-tags fs-4"></i>
+              <span class="ms-1">Categorias</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if perms.animals.view_animal %}
+          <li>
+            <a href="{% url "animal_list" %}" class="nav-link px-0 align-middle" data-bs-toggle="tooltip" data-bs-placement="right" title="Animais">
+              <i class="bi bi-box fs-4"></i>
+              <span class="ms-1">Animais</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if perms.inseminations.view_insemination %}
+          <li>
+            <a href="{% url "insemination_list" %}" class="nav-link px-0 align-middle" data-bs-toggle="tooltip" data-bs-placement="right" title="Inseminação">
+              <i class="bi bi-droplet fs-4"></i>
+              <span class="ms-1">Inseminação</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if perms.births.view_birth %}
+          <li>
+            <a href="{% url "birth_list" %}" class="nav-link px-0 align-middle" data-bs-toggle="tooltip" data-bs-placement="right" title="Partos">
+              <i class="bi bi-gift fs-4"></i>
+              <span class="ms-1">Partos</span>
+            </a>
+          </li>
+        {% endif %}
+        {% if user.is_staff %}
+          <li>
+            <a href="{% url 'app_settings' %}" class="nav-link px-0 align-middle" data-bs-toggle="tooltip" data-bs-placement="right" title="Configurações">
+              <i class="bi bi-gear fs-4"></i>
+              <span class="ms-1">Configurações</span>
+            </a>
+          </li>
+        {% endif %}
+        <li class="nav-item">
+          {% if user.is_authenticated %}
+            <form action="{% url 'logout' %}" method="post" id="logout-form" class="nav-link px-0 align-middle">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link text-decoration-none text-reset nav-link px-0 align-middle">
+                <i class="bi bi-box-arrow-right fs-4 align-middle"></i>
+                <span class="ms-1 align-middle">Sair</span>
+              </button>
+            </form>
+          {% endif %}
+        </li>
+      </ul>
     </div>
+    <hr>
   </div>
+</div>

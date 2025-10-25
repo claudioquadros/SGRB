@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h3 class="display-6">Relatório de Tarefas</h3>
+    <p>Período: {{ start_date|date:'d/m/Y' }} até {{ end_date|date:'d/m/Y' }}</p>
+
+    <h5 class="mt-4">Vacas/Novilhas que podem ser inseminadas</h5>
+    <ul>
+      {% for a in can_inseminate %}
+        <li>{{ a.name }}</li>
+      {% empty %}
+        <li>Nenhum animal.</li>
+      {% endfor %}
+    </ul>
+
+    <h5 class="mt-4">Prenhezes que devem ser verificadas</h5>
+    <ul>
+      {% for i in pregnancy_checks %}
+        <li>{{ i.animal.name }} - previsto: {{ i.expected_pregnancy|date:'d/m/Y' }}</li>
+      {% empty %}
+        <li>Nenhuma verificação no período.</li>
+      {% endfor %}
+    </ul>
+
+    <h5 class="mt-4">Secagens que devem ser realizadas</h5>
+    <ul>
+      {% for b in dry_tasks %}
+        <li>{{ b.animal.name }} - prevista: {{ b.expected_dry|date:'d/m/Y' }}</li>
+      {% empty %}
+        <li>Nenhuma secagem no período.</li>
+      {% endfor %}
+    </ul>
+
+    <h5 class="mt-4">Partos previstos</h5>
+    <ul>
+      {% for b in expected_births %}
+        <li>{{ b.animal.name }} - previsto: {{ b.expected_birth|date:'d/m/Y' }}</li>
+      {% empty %}
+        <li>Nenhum parto previsto no período.</li>
+      {% endfor %}
+    </ul>
+
+    <div class="alert alert-warning mt-3">
+      Se o download de PDF não iniciar, instale o pacote reportlab no servidor para habilitar o PDF nativo. O conteúdo acima é uma visualização HTML.
+    </div>
+  </div>
+{% endblock %}
+

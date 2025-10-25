@@ -13,7 +13,7 @@
             {% endfor %}
           </div>
         {% endif %}
-        <form method="post" class="form">
+        <form method="post" class="form" action="{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}">
           {% csrf_token %}
 
           <div class="row mb-3">
@@ -76,6 +76,7 @@
   </div>
 
   <script>
+    const PREGNANCY_CHECK_OFFSET_DAYS = {{ PREGNANCY_CHECK_OFFSET_DAYS|default:10 }};
     const animalSelect = document.getElementById('id_animal');
     const categoryInput = document.getElementById('animal-category');
 
@@ -91,7 +92,7 @@
     inseminationDate.addEventListener('change', function() {
       if (inseminationDate.value) {
         const date = new Date(inseminationDate.value);
-        date.setDate(date.getDate() + 10);
+        date.setDate(date.getDate() + Number(PREGNANCY_CHECK_OFFSET_DAYS));
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');

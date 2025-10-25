@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h3 class="display-6">Relatório de Tarefas</h3>
+    <div class="card">
+      <div class="card-body">
+        <form method="get" action="{% url 'report_tasks_pdf' %}">
+          <div class="row g-3">
+            <div class="col-md-4">
+              {{ form.start_date.label_tag }}
+              {{ form.start_date }}
+            </div>
+            <div class="col-md-4">
+              {{ form.end_date.label_tag }}
+              {{ form.end_date }}
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary mt-3">
+            <i class="bi bi-filetype-pdf"></i> Gerar PDF
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

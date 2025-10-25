@@ -5,14 +5,26 @@
     <h3 class="display-6">Editar Parto</h3>
     <div class="card">
       <div class="card-body">
-        <form method="post" class="form">
+        <form method="post" class="form" action="{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}">
           {% csrf_token %}
           {{ form.as_p }}
           <button type="submit" class="btn btn-primary">Salvar Parto</button>
         </form>
       </div>
     </div>
-    <a href="{% url 'birth_list' %}" class="btn btn-secondary mt-3"> Cancelar e Voltar para a Lista de Partos</a>  
+       {% with request.GET.next as next_view %}
+        {% with request.GET.urlencode as filters %}
+          {% if next_view == 'overview' %}
+            <a href="{% url 'animal_overview' %}?{{ filters }}" class="btn btn-secondary mt-3">
+              Cancelar e Voltar
+            </a>
+          {% else %}
+            <a href="{% url 'birth_list' %}?{{ filters }}" class="btn btn-secondary mt-3">
+              Cancelar e Voltar
+            </a>
+          {% endif %}
+        {% endwith %}
+      {% endwith %}
   </div>
 {% endblock %}
 

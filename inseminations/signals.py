@@ -1,6 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import timedelta
+from app.config import get_int
 from .models import Insemination
 from births.models import Birth
 
@@ -9,10 +10,10 @@ from births.models import Birth
 def create_birth_for_pregnant_update(sender, instance, **kwargs):
     if instance.is_pregnant == "S":
         if not Birth.objects.filter(insemination=instance).exists():
-            expected_birth = instance.date_of_insemination + timedelta(days=282)  # noqa
+            expected_birth = instance.date_of_insemination + timedelta(days=get_int('GESTATION_DAYS', 282))  # noqa
             expected_dry = None
             if instance.animal.category and instance.animal.category.name.lower() != "novilha":  # noqa
-                expected_dry = expected_birth - timedelta(days=50)
+                expected_dry = expected_birth - timedelta(days=get_int('DRY_PERIOD_BEFORE_BIRTH_DAYS', 50))
             Birth.objects.create(
                 animal=instance.animal,
                 insemination=instance,

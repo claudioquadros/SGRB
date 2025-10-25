@@ -14,6 +14,8 @@ class NextRedirectMixin:
 
     def get_next_url(self, default_view):
         next_view = self.request.GET.get("next", default_view)
+        if next_view == "overview":
+            next_view = "animal_overview"
         filters = self.request.GET.urlencode()
 
         # Remove parâmetros que não precisamos manter

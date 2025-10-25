@@ -15,8 +15,10 @@ class InseminationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView
 
     def get_queryset(self):
         queryset = super().get_queryset()
-
-        farm_id = self.request.GET.get('farm')
+        # Atualiza seleção de fazenda na sessão e aplica fallback
+        if 'farm' in self.request.GET:
+            self.request.session['selected_farm_id'] = self.request.GET.get('farm') or None
+        farm_id = self.request.GET.get('farm') or self.request.session.get('selected_farm_id')
         if farm_id:
             queryset = queryset.filter(animal__farm_id=farm_id)
 
@@ -41,6 +43,15 @@ class InseminationCreateView(LoginRequiredMixin, PermissionRequiredMixin, NextRe
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
+        # Filtra animais pela propriedade (farm) quando vier do overview/lista
+        from animals.models import Animal
+        farm_id = self.request.GET.get("farm") or self.request.session.get('selected_farm_id')
+        if farm_id and 'animal' in form.fields:
+            try:
+                form.fields['animal'].queryset = Animal.objects.filter(farm_id=int(farm_id))  # noqa
+            except (ValueError, TypeError):
+                pass
+
         animal_id = self.request.GET.get("animal")
         if animal_id and 'animal' in form.fields:
             try:
@@ -56,6 +67,13 @@ class InseminationCreateView(LoginRequiredMixin, PermissionRequiredMixin, NextRe
             return str(reverse("animal_overview"))
         return str(reverse("insemination_list"))
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Expor configuração para uso no template (JS)
+        from app.config import get_int
+        context["PREGNANCY_CHECK_OFFSET_DAYS"] = get_int('PREGNANCY_CHECK_OFFSET_DAYS', 10)  # noqa
+        return context
+
 class InseminationDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):  # noqa
     model = models.Insemination
     template_name = 'insemination_detail.html'
@@ -67,13 +85,6 @@ class InseminationCheckView(LoginRequiredMixin, PermissionRequiredMixin, NextRed
     form_class = forms.InseminationCheckForm
     success_url = 'insemination_list'
     permission_required = 'inseminations.change_insemination'
-
-    def get_success_url(self):
-        next_page = self.request.GET.get("next")
-        if next_page == "overview":
-            return str(reverse("animal_overview"))
-        return str(reverse("insemination_list"))
-
 
 class InseminationDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):  # noqa
     model = models.Insemination

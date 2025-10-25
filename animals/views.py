@@ -17,8 +17,10 @@ class AnimalListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-
-        farm_id = self.request.GET.get('farm')
+        # Atualiza seleção de fazenda na sessão e aplica fallback
+        if 'farm' in self.request.GET:
+            self.request.session['selected_farm_id'] = self.request.GET.get('farm') or None
+        farm_id = self.request.GET.get('farm') or self.request.session.get('selected_farm_id')
         if farm_id:
             queryset = queryset.filter(farm_id=farm_id)
 

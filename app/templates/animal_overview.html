@@ -10,14 +10,16 @@
 
       <div class="col-md-4">
         <label for="farm" class="form-label">Propriedade</label>
+        {% with current_farm=request.GET.farm|default:selected_farm_id %}
         <select name="farm" id="farm" class="form-select" onchange="this.form.submit()">
           <option value="">-- Todas --</option>
           {% for f in farms %}
-            <option value="{{ f.id }}" {% if request.GET.farm|stringformat:"s" == f.id|stringformat:"s" %}selected{% endif %}>
+            <option value="{{ f.id }}" {% if current_farm|stringformat:"s" == f.id|stringformat:"s" %}selected{% endif %}>
               {{ f.name }}
             </option>
           {% endfor %}
         </select>
+        {% endwith %}
       </div>
 
       <div class="col-md-4">
@@ -32,6 +34,18 @@
         </div>
       </div>
 
+      <div class="col-md-4 d-flex gap-2">
+        <a href="{% url 'report_tasks_form' %}" class="btn btn-outline-danger" title="Relatório de Tarefas">
+          <i class="bi bi-filetype-pdf"></i>
+        </a>
+        {% if perms.animals.add_animal %}
+          <a href="{% url 'animal_create' %}?next=animal_overview&{% if request.GET.farm %}{{ request.GET.urlencode }}{% else %}farm={{ selected_farm_id }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}{% endif %}"
+             class="btn btn-success">
+            <i class="bi bi-plus"></i> Novo Animal
+          </a>
+        {% endif %}
+      </div>
+
     </div>
   </form>
 
@@ -40,61 +54,55 @@
       <thead class="table-dark">
         <tr>
           <th>Nome</th>
-          <th>Nascimento</th>
-          <th>Categoria</th>
           <th>Última IA</th>
-          <th>Touro</th>
+          <th class="d-none d-lg-table-cell">Touro</th>
           <th>Verificar Prenhez</th>
-          <th>Verificada Prenhez</th>
+          <th class="d-none d-lg-table-cell">Verificada Prenhez</th>
           <th>Está Prenha?</th>
           <th>Previsão Parto</th>
-          <th>Previsão Secagem</th>
-          <th>Secagem</th>
-          <th>Data Parto</th>
+          <th class="d-none d-md-table-cell">Previsão Secagem</th>
+          <th class="d-none d-lg-table-cell">Secagem</th>
+          <th class="d-none d-lg-table-cell">Data Parto</th>
         </tr>
       </thead>
       <tbody>
         {% for animal in animals %}
         <tr>
           <td>
-            {% if animal.pode_inseminar %}
-              <a href="{% url 'insemination_create' %}?animal={{ animal.id }}&next=overview"
-                class="fw-bold text-warning text-decoration-none"
-                title="Animal apto à inseminação">
+            {% if animal.pode_inseminar and perms.inseminations.add_insemination %}
+              <a href="{% url 'insemination_create' %}?animal={{ animal.id }}&next=overview&{{ request.GET.urlencode }}"
+                 class="fw-bold text-warning text-decoration-none"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="Nascimento: {{ animal.birth|date:'d/m/Y' }} | Categoria: {{ animal.category.name }}">
                 {{ animal.name }}
               </a>
             {% else %}
-              {{ animal.name }}
+              <span data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="Nascimento: {{ animal.birth|date:'d/m/Y' }} | Categoria: {{ animal.category.name }}">
+                {{ animal.name }}
+              </span>
             {% endif %}
           </td>
-          <td>{{ animal.birth|date:"d/m/Y" }}</td>
-          <td>
-            {% if animal.category.name|lower == "novilha" %}
-              <a href="{% url 'animal_category' animal.id %}" 
-                class="fw-bold text-success text-decoration-none" 
-                title="Alterar categoria">
-                {{ animal.category.name }}
-              </a>
-            {% else %}
-              {{ animal.category.name }}
-            {% endif %}
-          </td>
+
           <td>{{ animal.ultima_inseminacao|date:"d/m/Y" }}</td>
-          <td> {% if animal.touro %}
-                 {{ animal.touro }}
-               {% else %}
-                  -
-               {% endif %}
-           </td>
+
+          <td class="d-none d-lg-table-cell">
+            {% if animal.touro %}
+              {{ animal.touro }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+
           <td>
             {% if animal.prenhez_verificacao %}
               {% if not animal.prenhez_verificada %}
                 {% if animal.prenhez_verificacao <= today %}
-                  <a href="{% url 'insemination_check' animal.ultima_inseminacao_id %}?next=overview" class="text-danger fw-bold text-decoration-none">
+                  <a href="{% url 'insemination_check' animal.ultima_inseminacao_id %}?next=overview&{{ request.GET.urlencode }}" class="text-danger fw-bold text-decoration-none">
                     {{ animal.prenhez_verificacao|date:"d/m/Y" }}
                   </a>
                 {% elif animal.prenhez_verificacao <= today_plus_10 %}
-                  <a href="{% url 'insemination_check' animal.ultima_inseminacao_id %}?next=overview" class="text-warning fw-bold text-decoration-none">
+                  <a href="{% url 'insemination_check' animal.ultima_inseminacao_id %}?next=overview&{{ request.GET.urlencode }}" class="text-warning fw-bold text-decoration-none">
                     {{ animal.prenhez_verificacao|date:"d/m/Y" }}
                   </a>
                 {% else %}
@@ -107,7 +115,9 @@
               -
             {% endif %}
           </td>
-          <td>{{ animal.prenhez_verificada|date:"d/m/Y" }}</td>
+
+          <td class="d-none d-lg-table-cell">{{ animal.prenhez_verificada|date:"d/m/Y" }}</td>
+
           <td>
             {% if animal.esta_prenha == "S" %}
               <span class="badge bg-success">Sim</span>
@@ -119,17 +129,16 @@
           </td>
 
           <td>
-            {# PREVISÃO PARTO #}
             {% if animal.parto %}
               {{ animal.parto|date:"d/m/Y" }}
             {% elif animal.parto_previsto %}
               {% if animal.parto_previsto <= today %}
-                <a href="{% url 'birth_check_birth' animal.birth_id %}?next=overview"
+                <a href="{% url 'birth_check_birth' animal.birth_id %}?next=overview&{{ request.GET.urlencode }}"
                   class="fw-bold text-danger text-decoration-none">
                   {{ animal.parto_previsto|date:"d/m/Y" }}
                 </a>
               {% elif animal.parto_previsto <= today_plus_10 %}
-                <a href="{% url 'birth_check_birth' animal.birth_id %}?next=overview"
+                <a href="{% url 'birth_check_birth' animal.birth_id %}?next=overview&{{ request.GET.urlencode }}"
                   class="fw-bold text-warning text-decoration-none">
                   {{ animal.parto_previsto|date:"d/m/Y" }}
                 </a>
@@ -139,16 +148,15 @@
             {% endif %}
           </td>
 
-          <td>
-            {# SECAGEM PREVISTA #}
+          <td class="d-none d-md-table-cell">
             {% if animal.secagem_prevista and not animal.secagem %}
               {% if animal.secagem_prevista <= today %}
-                <a href="{% url 'birth_check_dry' animal.birth_id %}?next=overview"
+                <a href="{% url 'birth_check_dry' animal.birth_id %}?next=overview&{{ request.GET.urlencode }}"
                   class="fw-bold text-danger text-decoration-none">
                   {{ animal.secagem_prevista|date:"d/m/Y" }}
                 </a>
               {% elif animal.secagem_prevista <= today_plus_10 %}
-                <a href="{% url 'birth_check_dry' animal.birth_id %}?next=overview"
+                <a href="{% url 'birth_check_dry' animal.birth_id %}?next=overview&{{ request.GET.urlencode }}"
                   class="fw-bold text-warning text-decoration-none">
                   {{ animal.secagem_prevista|date:"d/m/Y" }}
                 </a>
@@ -159,13 +167,13 @@
               {{ animal.secagem_prevista|date:"d/m/Y" }}
             {% endif %}
           </td>
-          
-          <td>{{ animal.secagem|date:"d/m/Y" }}</td>
-          <td>{{ animal.parto|date:"d/m/Y" }}</td>
+
+          <td class="d-none d-lg-table-cell">{{ animal.secagem|date:"d/m/Y" }}</td>
+          <td class="d-none d-lg-table-cell">{{ animal.parto|date:"d/m/Y" }}</td>
         </tr>
         {% empty %}
         <tr>
-          <td colspan="9" class="text-center">Nenhum animal encontrado</td>
+          <td colspan="10" class="text-center">Nenhum animal encontrado</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -197,4 +205,14 @@
   {% endif %}
 
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  if (window.bootstrap) {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+      new bootstrap.Tooltip(el);
+    });
+  }
+</script>
 {% endblock %}

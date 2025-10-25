@@ -63,6 +63,18 @@
         </p>
       </div>
     </div>
-    <a href="{% url 'birth_list' %}" class="btn btn-secondary mt-3">Voltar para Lista de Partos</a>
+      {% with request.GET.next as next_view %}
+        {% with request.GET.urlencode as filters %}
+          {% if next_view == 'overview' %}
+            <a href="{% url 'animal_overview' %}?{{ filters }}" class="btn btn-secondary mt-3">
+              Cancelar e Voltar
+            </a>
+          {% else %}
+            <a href="{% url 'birth_list' %}?{{ filters }}" class="btn btn-secondary mt-3">
+              Cancelar e Voltar
+            </a>
+          {% endif %}
+        {% endwith %}
+      {% endwith %}
   </div>
 {% endblock %}

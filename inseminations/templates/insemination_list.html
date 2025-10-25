@@ -6,14 +6,16 @@
 
       <div class="col-md-4">
         <label for="farm" class="form-label">Propriedade</label>
+        {% with current_farm=request.GET.farm|default:selected_farm_id %}
         <select name="farm" id="farm" class="form-select" onchange="this.form.submit()">
           <option value="">-- Todas --</option>
           {% for f in farms %}
-            <option value="{{ f.id }}" {% if request.GET.farm|stringformat:"s" == f.id|stringformat:"s" %}selected{% endif %}>
+            <option value="{{ f.id }}" {% if current_farm|stringformat:"s" == f.id|stringformat:"s" %}selected{% endif %}>
               {{ f.name }}
             </option>
           {% endfor %}
         </select>
+        {% endwith %}
       </div>
 
       <div class="col-md-4">
@@ -47,6 +49,7 @@
             <thead>
               <tr>
                 <th>Animal</th>
+                <th>Categoria</th>
                 <th>Data da Inseminação</th>
                 <th>Touro</th>
                 <th>Verificar a Prenhez</th>
@@ -59,6 +62,7 @@
               {% for insemination in inseminations %}
                 <tr>
                   <td>{{ insemination.animal.name }}</td>
+                  <td>{% if insemination.animal.category %}{{ insemination.animal.category }}{% else %}-{% endif %}</td>
                   <td>{{ insemination.date_of_insemination|date:'d/m/Y' }}</td>
                   <td>
                     {% if insemination.bull %}

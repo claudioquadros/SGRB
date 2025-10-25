@@ -15,32 +15,70 @@
 <body>
   {% include 'components/_header.html' %}
 
+  <style>
+    .sidebar-collapsed #sidebar { width: 64px !important; min-width: 64px !important; }
+    .sidebar-collapsed #sidebar .nav-link span { display: none !important; }
+    .sidebar-collapsed #sidebar .nav-link { text-align: center; }
+    .sidebar-collapsed #sidebar i { margin-right: 0 !important; }
+  </style>
+
   <div class="container-fluid">
-    {% if user.is_authenticated %}
-      {% include 'components/_sidebar.html' %}
-    {% endif %}
-    <div class="col py-3">
-      <div class="container mt-4">
-        <main>
-          {% block content %}
-          {% endblock %}
-        </main>
-        {% if messages %}
-          <div class="container mb-3">
-            {% for message in messages %}
-              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    <div class="row flex-nowrap">
+      {% if user.is_authenticated %}
+        {% include 'components/_sidebar.html' %}
+      {% endif %}
+      <div class="col py-3">
+        <div class="container mt-4">
+          <main>
+            {% if selected_farm %}
+              <div class="alert alert-info py-2 mb-3">
+                <i class="bi bi-map"></i>
+                Propriedade selecionada: <strong>{{ selected_farm.name }}</strong>
               </div>
-            {% endfor %}
-          </div>
-        {% endif %}
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+          </main>
+          {% if messages %}
+            <div class="container mb-3">
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
-
-  </div>
   {% include 'components/_footer.html' %}
+  <script>
+    (function() {
+      const key = 'sidebarCollapsed';
+      const isCollapsed = localStorage.getItem(key) === '1';
+      if (isCollapsed) document.body.classList.add('sidebar-collapsed');
+      const btn = document.getElementById('toggleSidebar');
+      if (btn) {
+        btn.addEventListener('click', function() {
+          document.body.classList.toggle('sidebar-collapsed');
+          const collapsed = document.body.classList.contains('sidebar-collapsed');
+          localStorage.setItem(key, collapsed ? '1' : '0');
+          if (window.bootstrap) {
+            document.querySelectorAll('#sidebar [data-bs-toggle="tooltip"]').forEach(function(el){
+              try { new bootstrap.Tooltip(el); } catch (e) {}
+            });
+          }
+        });
+      }
+      if (window.bootstrap) {
+        document.querySelectorAll('#sidebar [data-bs-toggle="tooltip"]').forEach(function(el){
+          try { new bootstrap.Tooltip(el); } catch (e) {}
+        });
+      }
+    })();
+  </script>
 </body>
 
 </html>

@@ -1,6 +1,7 @@
 from django import forms
 from .models import Insemination
 from datetime import timedelta
+from app.config import get_int
 from django.utils.timezone import now
 
 
@@ -43,7 +44,7 @@ class InseminationRegisterForm(forms.ModelForm):
 
         date = self.initial.get('date_of_insemination')
         if date and not self.initial.get('expected_pregnancy'):
-            self.initial['expected_pregnancy'] = date + timedelta(days=10)
+            self.initial['expected_pregnancy'] = date + timedelta(days=get_int('PREGNANCY_CHECK_OFFSET_DAYS', 10))  # noqa
 
     def clean(self):
         cleaned_data = super().clean()
@@ -66,7 +67,7 @@ class InseminationRegisterForm(forms.ModelForm):
 
         if date_of_insemination:
             if not cleaned_data.get("expected_pregnancy"):
-                cleaned_data["expected_pregnancy"] = date_of_insemination + timedelta(days=10)  # noqa
+                cleaned_data["expected_pregnancy"] = date_of_insemination + timedelta(days=get_int('PREGNANCY_CHECK_OFFSET_DAYS', 10))  # noqa
 
         return cleaned_data
 
