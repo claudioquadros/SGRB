@@ -24,6 +24,8 @@ class AnimalOverviewListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
         queryset = super().get_queryset()
 
         queryset = queryset.select_related("category")
+        # Somente fêmeas reprodutivas na visão geral
+        queryset = queryset.filter(category__is_reproductive_female=True)
 
         last_insemination = Insemination.objects.filter(
             animal=OuterRef('pk')
@@ -215,6 +217,8 @@ class TaskReportPdfView(LoginRequiredMixin, PermissionRequiredMixin, TemplateVie
         last_birth = Birth.objects.filter(insemination=OuterRef('ultima_inseminacao_id')).order_by('-created_at')
 
         animals_qs = Animal.objects.select_related('category', 'breed')
+        # Considerar somente fêmeas reprodutivas no relatório
+        animals_qs = animals_qs.filter(category__is_reproductive_female=True)
         if farm_id:
             animals_qs = animals_qs.filter(farm_id=farm_id)
         animals_qs = animals_qs.annotate(
@@ -233,15 +237,28 @@ class TaskReportPdfView(LoginRequiredMixin, PermissionRequiredMixin, TemplateVie
             )
         ).filter(pode_inseminar=True).order_by('name')
 
-        preg_check_qs = Insemination.objects.filter(expected_pregnancy__range=(start_date, end_date), pregnancy_check__isnull=True).select_related('animal', 'animal__breed', 'animal__category')
+        preg_check_qs = Insemination.objects.filter(
+            expected_pregnancy__range=(start_date, end_date),
+            pregnancy_check__isnull=True,
+            animal__category__is_reproductive_female=True,
+        ).select_related('animal', 'animal__breed', 'animal__category')
         if farm_id:
             preg_check_qs = preg_check_qs.filter(animal__farm_id=farm_id)
 
-        dry_qs = Birth.objects.filter(expected_dry__range=(start_date, end_date), dry__isnull=True, birth__isnull=True).select_related('animal', 'animal__breed', 'animal__category')
+        dry_qs = Birth.objects.filter(
+            expected_dry__range=(start_date, end_date),
+            dry__isnull=True,
+            birth__isnull=True,
+            animal__category__is_reproductive_female=True,
+        ).select_related('animal', 'animal__breed', 'animal__category')
         if farm_id:
             dry_qs = dry_qs.filter(animal__farm_id=farm_id)
 
-        births_qs = Birth.objects.filter(expected_birth__range=(start_date, end_date), birth__isnull=True).select_related('animal', 'animal__breed', 'animal__category')
+        births_qs = Birth.objects.filter(
+            expected_birth__range=(start_date, end_date),
+            birth__isnull=True,
+            animal__category__is_reproductive_female=True,
+        ).select_related('animal', 'animal__breed', 'animal__category')
         if farm_id:
             births_qs = births_qs.filter(animal__farm_id=farm_id)
 

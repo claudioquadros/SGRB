@@ -67,6 +67,15 @@ class BirthCreateView(LoginRequiredMixin, PermissionRequiredMixin, NextRedirectM
                 form.fields['animal'].initial = int(animal_id)
             except (ValueError, TypeError):
                 pass
+        # Garantir que apenas fêmeas reprodutivas sejam listadas
+        if 'animal' in form.fields:
+            try:
+                form.fields['animal'].queryset = form.fields['animal'].queryset.filter(
+                    category__is_reproductive_female=True
+                )
+            except Exception:
+                from animals.models import Animal
+                form.fields['animal'].queryset = Animal.objects.filter(category__is_reproductive_female=True)
         return form
 
 

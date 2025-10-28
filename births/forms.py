@@ -8,7 +8,7 @@ class BirthForm(forms.ModelForm):
 
     class Meta:
         model = models.Birth
-        fields = ['animal', 'birth', ]
+        fields = ['animal', 'birth', 'birth_type']
         widgets = {
             'birth': forms.DateInput(
                 attrs={
@@ -18,10 +18,12 @@ class BirthForm(forms.ModelForm):
                 },
                 format='%Y-%m-%d'
             ),
+            'birth_type': forms.Select(attrs={'class': 'form-select', 'style': 'max-width: 240px;'})
         }
         labels = {
             'Animal': 'Animal',
             'birth': 'Nascimento',
+            'birth_type': 'Tipo do nascimento',
         }
 
 
@@ -35,13 +37,14 @@ class BirthUpdateForm(forms.ModelForm):
 
     class Meta:
         model = models.Birth
-        fields = ['animal', 'date_of_insemination', 'expected_birth', 'expected_dry', 'dry', 'birth']  # noqa
+        fields = ['animal', 'date_of_insemination', 'expected_birth', 'expected_dry', 'dry', 'birth', 'birth_type']  # noqa
         widgets = {
             'animal': forms.Select(attrs={'class': 'form-control', 'readonly': 'readonly'}),  # noqa
             'expected_birth': forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'}),  # noqa
             'expected_dry': forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'}),  # noqa
             'dry': forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'}),  # noqa
             'birth': forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form-control', 'type': 'date'}),  # noqa
+            'birth_type': forms.Select(attrs={'class': 'form-select'}),
         }
         labels = {
             'animal': 'Animal',
@@ -50,6 +53,7 @@ class BirthUpdateForm(forms.ModelForm):
             'expected_dry': 'Data prevista para secagem',
             'dry': 'Data de secagem',
             'birth': 'Data do parto',
+            'birth_type': 'Tipo do nascimento',
         }
 
     def __init__(self, *args, **kwargs):
@@ -101,15 +105,17 @@ class BirthCheckDryUpdateForm(forms.ModelForm):
 class BirthCheckBirthUpdateForm(forms.ModelForm):
     class Meta:
         model = models.Birth
-        fields = ['birth']
+        fields = ['birth', 'birth_type']
         widgets = {
             'birth': forms.DateInput(
                 attrs={'type': 'date'},
                 format='%Y-%m-%d'
-            )
+            ),
+            'birth_type': forms.Select(attrs={'class': 'form-select'})
         }
         labels = {
             'birth': 'Data do Parto',
+            'birth_type': 'Tipo do nascimento',
         }
 
     def __init__(self, *args, **kwargs):

@@ -33,6 +33,7 @@
         <tr>
           <th>ID</th>
           <th>Nome</th>
+          <th>Reprodutiva</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -41,6 +42,13 @@
           <tr>
             <td>{{ category.id }}</td>
             <td>{{ category.name}}</td>
+            <td>
+              {% if category.is_reproductive_female %}
+                <span class="badge bg-success">Sim</span>
+              {% else %}
+                <span class="badge bg-secondary">Não</span>
+              {% endif %}
+            </td>
             <td>
               {% if perms.categories.view_category %}
                 <a href="{% url "category_detail" category.id %}" class="btn btn-info btn-sm">

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from animals.models import Animal
 
 
@@ -28,3 +29,8 @@ class Insemination(models.Model):
 
     def __str__(self):
         return str(self.animal.name)
+
+    def clean(self):
+        super().clean()
+        if self.animal and not getattr(self.animal.category, 'is_reproductive_female', False):  # noqa
+            raise ValidationError("A categoria do animal selecionado não permite inseminação.")  # noqa

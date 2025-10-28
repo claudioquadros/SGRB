@@ -17,8 +17,8 @@ class InseminationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView
         queryset = super().get_queryset()
         # Atualiza seleção de fazenda na sessão e aplica fallback
         if 'farm' in self.request.GET:
-            self.request.session['selected_farm_id'] = self.request.GET.get('farm') or None
-        farm_id = self.request.GET.get('farm') or self.request.session.get('selected_farm_id')
+            self.request.session['selected_farm_id'] = self.request.GET.get('farm') or None  # noqa
+        farm_id = self.request.GET.get('farm') or self.request.session.get('selected_farm_id')  # noqa
         if farm_id:
             queryset = queryset.filter(animal__farm_id=farm_id)
 
@@ -43,14 +43,17 @@ class InseminationCreateView(LoginRequiredMixin, PermissionRequiredMixin, NextRe
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        # Filtra animais pela propriedade (farm) quando vier do overview/lista
+        # Filtra apenas fêmeas reprodutivas e, se houver, pela fazenda
         from animals.models import Animal
-        farm_id = self.request.GET.get("farm") or self.request.session.get('selected_farm_id')
-        if farm_id and 'animal' in form.fields:
+        farm_id = self.request.GET.get("farm") or self.request.session.get('selected_farm_id')  # noqa
+        if 'animal' in form.fields:
             try:
-                form.fields['animal'].queryset = Animal.objects.filter(farm_id=int(farm_id))  # noqa
+                base_qs = Animal.objects.filter(category__is_reproductive_female=True)
+                if farm_id:
+                    base_qs = base_qs.filter(farm_id=int(farm_id))
+                form.fields['animal'].queryset = base_qs
             except (ValueError, TypeError):
-                pass
+                form.fields['animal'].queryset = Animal.objects.filter(category__is_reproductive_female=True)
 
         animal_id = self.request.GET.get("animal")
         if animal_id and 'animal' in form.fields:

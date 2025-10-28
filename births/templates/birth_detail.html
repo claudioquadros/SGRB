@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 
 {% block content %}
   <div class="container mt-4">
@@ -51,6 +51,14 @@
             -
           {% endif %}
         </p>
+        <p class="card-text">
+          <strong>Tipo do nascimento:</strong>
+          {% if object.birth_type %}
+            {{ object.get_birth_type_display }}
+          {% else %}
+            -
+          {% endif %}
+        </p>
 
         <p class="card-text">
           <strong>Data de inserção:</strong>
@@ -78,3 +86,6 @@
       {% endwith %}
   </div>
 {% endblock %}
+
+
+

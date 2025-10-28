@@ -3,6 +3,11 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    is_reproductive_female = models.BooleanField(
+        "Fêmea reprodutiva",
+        default=False,
+        help_text="Pode ser inseminada e ter partos",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

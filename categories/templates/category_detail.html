@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 
 {% block content %}
   <div class="container mt-4">
@@ -7,15 +7,24 @@
       <div class="card-body">
         <h3 class="card-title">{{ object.name }}</h3>
         <p class="card-text">
-          <strong>Data de inserção:</strong>
+          <strong>Data de inserÃ§Ã£o:</strong>
           {{ object.created_at|date:"d/m/Y H:i" }}
         </p>
         <p class="card-text">
-          <strong>Última atualização:</strong>
+          <strong>Ãšltima atualizaÃ§Ã£o:</strong>
           {{ object.updated_at|date:"d/m/Y H:i" }}
+        </p>
+        <p class="card-text">
+          <strong>Fêmea reprodutiva:</strong>
+          {% if object.is_reproductive_female %}
+            <span class="badge bg-success">Sim</span>
+          {% else %}
+            <span class="badge bg-secondary">Não</span>
+          {% endif %}
         </p>
       </div>
     </div>
     <a href="{% url 'category_list' %}" class="btn btn-secondary mt-3">Voltar para Lista de Categorias</a>
   </div>
 {% endblock %}
+
