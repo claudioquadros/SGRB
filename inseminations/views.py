@@ -36,7 +36,7 @@ class InseminationListView(LoginRequiredMixin, PermissionRequiredMixin, ListView
 
 class InseminationCreateView(LoginRequiredMixin, PermissionRequiredMixin, NextRedirectMixin, CreateView):  # noqa
     model = models.Insemination
-    template_name = "Insemination_create.html"
+    template_name = "insemination_create.html"
     form_class = forms.InseminationRegisterForm
     success_url = 'insemination_list'
     permission_required = 'inseminations.add_insemination'
