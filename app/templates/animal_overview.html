@@ -49,8 +49,7 @@
     </div>
   </form>
 
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover align-middle">
+  <table class="table table-bordered table-hover align-middle">
       <thead class="table-dark">
         <tr>
           <th>Nome</th>
@@ -60,9 +59,9 @@
           <th class="d-none d-lg-table-cell">Verificada Prenhez</th>
           <th>Está Prenha?</th>
           <th>Previsão Parto</th>
+          <th>Data Parto</th>
+          <th>Secagem</th>
           <th class="d-none d-md-table-cell">Previsão Secagem</th>
-          <th class="d-none d-lg-table-cell">Secagem</th>
-          <th class="d-none d-lg-table-cell">Data Parto</th>
         </tr>
       </thead>
       <tbody>
@@ -148,6 +147,9 @@
             {% endif %}
           </td>
 
+          <td>{{ animal.parto|date:"d/m/Y" }}</td>
+          <td>{{ animal.secagem|date:"d/m/Y" }}</td>
+
           <td class="d-none d-md-table-cell">
             {% if animal.secagem_prevista and not animal.secagem %}
               {% if animal.secagem_prevista <= today %}
@@ -167,9 +169,6 @@
               {{ animal.secagem_prevista|date:"d/m/Y" }}
             {% endif %}
           </td>
-
-          <td class="d-none d-lg-table-cell">{{ animal.secagem|date:"d/m/Y" }}</td>
-          <td class="d-none d-lg-table-cell">{{ animal.parto|date:"d/m/Y" }}</td>
         </tr>
         {% empty %}
         <tr>
@@ -177,8 +176,7 @@
         </tr>
         {% endfor %}
       </tbody>
-    </table>
-  </div>
+  </table>
 
   {% if is_paginated %}
     <nav aria-label="Page navigation">
